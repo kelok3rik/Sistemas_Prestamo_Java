@@ -8,12 +8,10 @@ package com.mycompany.sistemaprestamos;
  *
  * @author erikr
  */
-
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 
 public class Login extends javax.swing.JFrame {
 
@@ -88,13 +86,15 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-     private boolean validateUser(String username, String password) {
+    private boolean validateUser(String username, String password) {
         // Validar las credenciales en el archivo de usuarios
         try (BufferedReader br = new BufferedReader(new FileReader("usuarios.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts[0].equals(username) && parts[1].equals(password)) {
+                    SistemaPrestamos.nivelAcceso = parts[2];
+
                     return true;
                 }
             }
@@ -103,13 +103,13 @@ public class Login extends javax.swing.JFrame {
         }
         return false;
     }
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-         String username = jTextField1.getText();
-         String password = jTextField2.getText();
-         
-         if (validateUser(username, password)) {
+        String username = jTextField1.getText();
+        String password = jTextField2.getText();
+
+        if (validateUser(username, password)) {
             JOptionPane.showMessageDialog(this, "Login exitoso!");
             // Abre el menú principal si el login es exitoso
             MenuPrincipal menu = new MenuPrincipal();
