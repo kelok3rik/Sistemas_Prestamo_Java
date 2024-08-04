@@ -22,6 +22,7 @@ public class MantenimientoClientes extends javax.swing.JFrame {
      */
     public MantenimientoClientes() {
         initComponents();
+         jButton1.setEnabled(false);
     }
 
     /**
@@ -282,6 +283,7 @@ public class MantenimientoClientes extends javax.swing.JFrame {
         txtSueldo.setText("");
         jComboBox1.setSelectedIndex(1);
         txtIDFiador.setText("");
+        jButton1.setEnabled(false);
         
     }
     
@@ -302,6 +304,7 @@ public class MantenimientoClientes extends javax.swing.JFrame {
                 if (parts[0].equals(idCliente)) {
                     clienteData = parts;
                     exists = true;
+                    jButton1.setEnabled(true);
                     break;
                 }
             }
@@ -348,6 +351,7 @@ public class MantenimientoClientes extends javax.swing.JFrame {
                 if (parts[0].equals(idFiador)) {
                     JOptionPane.showMessageDialog(this, "Fiador encontrado: " + parts[1], "Información", JOptionPane.INFORMATION_MESSAGE);
                     fiadorExists = true;
+                    jButton1.setEnabled(true);
                     break;
                 }
             }
