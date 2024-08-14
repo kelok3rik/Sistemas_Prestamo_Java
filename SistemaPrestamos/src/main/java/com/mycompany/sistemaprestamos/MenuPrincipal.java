@@ -11,6 +11,7 @@ import prestamo.mantenimiento.MantenimientoFiador;
 import prestamo.mantenimiento.MantenimientoPrestamos;
 
 
+
 /**
  *
  * @author erikr
@@ -115,6 +116,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenu1.setText("Movimientos");
 
         jMenuItem6.setText("De Cobros");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem6);
 
         jMenuBar1.add(jMenu1);
@@ -122,9 +128,19 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenu2.setText("Procesos");
 
         jMenuItem7.setText("Actualizar Cobros");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem7);
 
         jMenuItem8.setText("Reversar Cobros");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem8);
 
         jMenuBar1.add(jMenu2);
@@ -211,6 +227,25 @@ public class MenuPrincipal extends javax.swing.JFrame {
         MantenimientoPrestamos MntPrestamos = new MantenimientoPrestamos();
         MntPrestamos.setVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        // TODO add your handling code here:
+        MovimientoCobros mvtCobros = new MovimientoCobros();
+        mvtCobros.setVisible(true);
+        
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        // TODO add your handling code here:
+        GenerarCobros  gnrCobros = new GenerarCobros();
+        gnrCobros.setVisible(true);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        // TODO add your handling code here:
+        ReversarCobros rvrCobros = new ReversarCobros();
+        rvrCobros.setVisible(true);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     /**
      * @param args the command line arguments

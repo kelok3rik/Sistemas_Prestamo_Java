@@ -33,8 +33,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-
+//import com.itextpdf.*;
 /**
  *
  * @author erikr
@@ -86,6 +90,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel14 = new javax.swing.JLabel();
         txtPlazoPrestamo = new javax.swing.JSpinner();
+        jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -151,6 +156,30 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             }
         });
 
+        txtMontoPrestamo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtMontoPrestamoKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtMontoPrestamoKeyReleased(evt);
+            }
+        });
+
+        txtBalancePrestamo.setEditable(false);
+
+        txtTasaPrestamo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTasaPrestamoActionPerformed(evt);
+            }
+        });
+        txtTasaPrestamo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTasaPrestamoKeyReleased(evt);
+            }
+        });
+
+        txtTasaFija.setEditable(false);
+
         jButton2.setText("LIMPIAR");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -167,6 +196,8 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 txtPlazoPrestamoStateChanged(evt);
             }
         });
+
+        jLabel15.setText("%");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -194,10 +225,6 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addGap(30, 30, 30)
-                                .addComponent(txtTasaPrestamo))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addGap(81, 81, 81)
                                 .addComponent(txtTasaFija))
@@ -206,14 +233,19 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel8)
-                                    .addComponent(jLabel11))
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel12))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel15))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(txtPlazoPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel14)
-                                        .addGap(0, 97, Short.MAX_VALUE))
+                                        .addGap(0, 106, Short.MAX_VALUE))
                                     .addComponent(txtBalancePrestamo)
                                     .addComponent(txtFechaFinal, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(txtTipoGarantia)
@@ -285,7 +317,8 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
-                    .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -397,8 +430,8 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        // Validar atributos obligatorios
         if (validarCampos()) {
+            // Recopilar datos del préstamo
             String idPrestamo = txtIDPrestamo.getText().trim();
             String idCliente = txtIDCliente.getText().trim();
             String idFiador = txtIDFiador.getText().trim();
@@ -412,37 +445,39 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             String tasaPrestamo = txtTasaPrestamo.getText().trim();
             String tasaFija = txtTasaFija.getText().trim();
 
-            File archivo = new File("Prestamos.txt");
-            List<String> lineas = new ArrayList<>();
+            File archivoPrestamo = new File("Prestamos.txt");
+            List<String> lineasPrestamo = new ArrayList<>();
             boolean existePrestamo = false;
 
-            // Leer el archivo y almacenar en una lista
-            try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            // Leer el archivo de préstamos y modificar o agregar el préstamo
+            try (BufferedReader reader = new BufferedReader(new FileReader(archivoPrestamo))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] atributos = line.split(",");
                     if (atributos.length >= 4 && atributos[0].equals(idPrestamo)) {
                         // Actualizar la línea existente con la nueva información
-                        lineas.add(idPrestamo + "," + idCliente + "," + idFiador + "," + estadoPrestamo + ","
+                        String nuevaLinea = idPrestamo + "," + idCliente + "," + idFiador + "," + estadoPrestamo + ","
                                 + fechaInicio + "," + plazoPrestamo + "," + fechaFinal + "," + tipoGarantia + ","
-                                + montoPrestamo + "," + balancePrestamo + "," + tasaPrestamo + "," + tasaFija);
+                                + montoPrestamo + "," + balancePrestamo + "," + tasaPrestamo + "," + tasaFija;
+                        lineasPrestamo.add(nuevaLinea);
                         existePrestamo = true;
                     } else {
                         // Almacenar las líneas no modificadas
-                        lineas.add(line);
+                        lineasPrestamo.add(line);
                     }
                 }
 
                 // Si el préstamo no existía, agregarlo a la lista
                 if (!existePrestamo) {
-                    lineas.add(idPrestamo + "," + idCliente + "," + idFiador + "," + estadoPrestamo + ","
+                    String nuevaLinea = idPrestamo + "," + idCliente + "," + idFiador + "," + estadoPrestamo + ","
                             + fechaInicio + "," + plazoPrestamo + "," + fechaFinal + "," + tipoGarantia + ","
-                            + montoPrestamo + "," + balancePrestamo + "," + tasaPrestamo + "," + tasaFija);
+                            + montoPrestamo + "," + balancePrestamo + "," + tasaPrestamo + "," + tasaFija;
+                    lineasPrestamo.add(nuevaLinea);
                 }
 
-                // Escribir todas las líneas de vuelta en el archivo
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
-                    for (String linea : lineas) {
+                // Escribir todas las líneas de vuelta en el archivo de préstamos
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoPrestamo))) {
+                    for (String linea : lineasPrestamo) {
                         writer.write(linea);
                         writer.newLine();
                     }
@@ -451,11 +486,129 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Préstamo guardado exitosamente.");
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Error al guardar el préstamo.", "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Salir del método en caso de error
+            }
+
+            // Crear cuotas del préstamo y almacenarlas en el archivo Cuota_Prestamo.txt
+            try {
+                File archivoCuotas = new File("Cuota_Prestamo.txt");
+                List<String> lineasCuota = new ArrayList<>();
+                boolean existeCuotas = false;
+
+                // Leer el archivo de cuotas y verificar si ya existen cuotas para este préstamo
+                try (BufferedReader reader = new BufferedReader(new FileReader(archivoCuotas))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String[] atributos = line.split(",");
+                        if (atributos.length >= 3 && atributos[0].equals(idPrestamo)) {
+                            // Si ya existe una cuota para este préstamo, mantén el contenido
+                            existeCuotas = true;
+                        }
+                        // Almacenar todas las líneas existentes en la lista
+                        lineasCuota.add(line);
+                    }
+                }
+
+                // Solo agregar nuevas cuotas si no existen para este préstamo
+                if (!existeCuotas) {
+                    int numCuotas = Integer.parseInt(plazoPrestamo);
+                    double monto = Double.parseDouble(montoPrestamo);
+                    double tasaAnual = Double.parseDouble(tasaPrestamo);
+
+                    // Convertir la tasa anual a mensual
+                    double tasaMensual = tasaAnual / 12 / 100;
+
+                    // Verificar si la tasa mensual es cero (no se puede calcular la cuota en este caso)
+                    if (tasaMensual == 0) {
+                        JOptionPane.showMessageDialog(this, "La tasa de interés mensual no puede ser cero.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return; // Salir del método en caso de error
+                    }
+
+                    // Calcular la cuota fija mensual
+                    double cuotaFija = (monto * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -numCuotas));
+
+                    // Inicializar saldo pendiente
+                    double saldoPendiente = monto;
+                    double valorInteresCuota;
+                    double valorAmortizacionCuota;
+
+                    // Formato para fechas
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Date fechaInicioDate = null;
+
+                    try {
+                        fechaInicioDate = sdf.parse(fechaInicio);
+                    } catch (ParseException e) {
+                        JOptionPane.showMessageDialog(this, "Error en el formato de la fecha de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
+                        return; // Salir del método en caso de error
+                    }
+
+                    // Imprimir encabezado
+                    System.out.println("ID_Prestamo | ID_Cliente | Fecha_Cuota | Numero_Cuota | Valor_Cuota | Valor_Amortizacion_Cuota | Valor_Interes_Cuota | Status_Cuota");
+
+                    // Calcular y almacenar los detalles para cada mes
+                    for (int mes = 1; mes <= numCuotas; mes++) {
+                        valorInteresCuota = saldoPendiente * tasaMensual;
+                        valorAmortizacionCuota = cuotaFija - valorInteresCuota;
+                        saldoPendiente -= valorAmortizacionCuota;
+
+                        // Calcular la fecha de vencimiento de la cuota
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(fechaInicioDate);
+                        calendar.add(Calendar.MONTH, mes);
+                        Date fechaCuotaDate = calendar.getTime();
+                        String fechaCuota = sdf.format(fechaCuotaDate);
+
+                        // Usar "false" para el estado de la cuota
+                        String status = "false";
+
+                        // Mostrar los detalles de la cuota en consola
+                        System.out.printf("%s | %s | %s | %d | %.2f | %.2f | %.2f | %s%n",
+                                idPrestamo, idCliente, fechaCuota, mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota, status);
+
+                        // Agregar la línea de cuota a la lista
+                        String lineaCuota = String.format("%s,%s,%s,%d,%.2f,%.2f,%.2f,%s",
+                                idPrestamo, idCliente, fechaCuota, mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota, status);
+                        lineasCuota.add(lineaCuota);
+                    }
+                }
+
+                // Escribir todas las cuotas en el archivo de cuotas
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoCuotas))) {
+                    for (String linea : lineasCuota) {
+                        writer.write(linea);
+                        writer.newLine();
+                    }
+                }
+
+                JOptionPane.showMessageDialog(this, "Cuotas generadas y guardadas exitosamente.");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Error en los datos del préstamo. Asegúrese de ingresar valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al generar las cuotas del préstamo.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private String calcularFechaCuota(String fechaInicio, int cuotaNumero) throws ParseException {
+        // Definir el formato de la fecha
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        // Convertir la fecha de inicio a un objeto Date
+        Date fechaInicioDate = sdf.parse(fechaInicio);
+
+        // Crear un objeto Calendar y establecer la fecha de inicio
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicioDate);
+
+        // Añadir el número de meses correspondiente al número de cuota
+        calendar.add(Calendar.MONTH, cuotaNumero);
+
+        // Formatear la fecha calculada al formato String
+        return sdf.format(calendar.getTime());
+    }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -559,6 +712,73 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtTipoGarantiaActionPerformed
 
+    private void txtMontoPrestamoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoPrestamoKeyPressed
+        // TODO add your handling code here:
+        // txtBalancePrestamo.setText(txtMontoPrestamo.getText());
+    }//GEN-LAST:event_txtMontoPrestamoKeyPressed
+
+    private void txtMontoPrestamoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoPrestamoKeyReleased
+        // TODO add your handling code here:
+        txtBalancePrestamo.setText(txtMontoPrestamo.getText());
+    }//GEN-LAST:event_txtMontoPrestamoKeyReleased
+
+    private void txtTasaPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTasaPrestamoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTasaPrestamoActionPerformed
+
+    private void txtTasaPrestamoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTasaPrestamoKeyReleased
+        // TODO add your handling code here:
+        calcularCuotaFija();
+
+
+    }//GEN-LAST:event_txtTasaPrestamoKeyReleased
+
+    private void calcularCuotaFija() {
+        try {
+            // Obtener los valores de la interfaz gráfica
+            double montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText());
+            double tasaInteresTotal = Double.parseDouble(txtTasaPrestamo.getText()) / 100; // Convertir a porcentaje
+            int meses = (Integer) txtPlazoPrestamo.getValue();
+
+            // Calcular el interés total a lo largo del préstamo
+            double interesTotal = montoPrestamo * tasaInteresTotal;
+
+            // Sumar el interés total al monto del préstamo para obtener el monto total a pagar
+            double montoTotalPagar = montoPrestamo + interesTotal;
+
+            // Calcular la cuota fija mensual
+            double cuotaFija = montoTotalPagar / meses;
+
+            // Inicializar saldo pendiente
+            double saldoPendiente = montoTotalPagar;
+            double valorInteresCuota;
+            double valorAmortizacionCuota;
+
+            // Imprimir encabezado de la tabla
+            System.out.println("Mes\tValor_Cuota\tValor_Amortizacion_Cuota\tValor_Interes_Cuota");
+
+            // Calcular y mostrar los detalles para cada mes
+            for (int mes = 1; mes <= meses; mes++) {
+                valorInteresCuota = interesTotal / meses; // Distribuir el interés total entre todas las cuotas
+                valorAmortizacionCuota = cuotaFija - valorInteresCuota;  // Parte de la cuota que amortiza el capital
+                saldoPendiente -= valorAmortizacionCuota; // Actualizar saldo pendiente
+
+                // Mostrar los detalles de la cuota en la consola
+                System.out.printf("%d\t%.2f\t%.2f\t%.2f%n", mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota);
+
+                // Determinar el estado de la cuota (este valor no se usa actualmente, pero se podría implementar)
+                String status = (saldoPendiente <= 0) ? "Pagada" : "Pendiente";
+            }
+
+            // Mostrar la cuota fija calculada en la interfaz gráfica
+            txtTasaFija.setText(String.format("%.2f", cuotaFija));
+
+        } catch (NumberFormatException e) {
+            // Manejar errores en la entrada de datos
+            JOptionPane.showMessageDialog(this, "Por favor ingrese valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void setFechaInicioActual() {
         // Obtener la fecha actual del sistema
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -657,6 +877,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -2,3 +2,4 @@
 admin,admin,0,Erik,Cruz,erikrdbs@gmail.com
 1,1,1,1,1,1
 AEIOU,123456,JUAN,PERE,ERERERER@GMAIL.COM,1
+jose,pena123,jose,pena,josee@gmail.com,1

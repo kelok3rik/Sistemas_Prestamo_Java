@@ -12,7 +12,10 @@ public class SistemaPrestamos {
     public static String nivelAcceso;
 
     public static void main(String[] args) {
-        MenuPrincipal menu = new MenuPrincipal();
-        menu.setVisible(true);
+       // MenuPrincipal menu = new MenuPrincipal();
+        Login login = new Login();
+       // menu.setVisible(true);
+        login.setVisible(true);
+        
     }
 }
