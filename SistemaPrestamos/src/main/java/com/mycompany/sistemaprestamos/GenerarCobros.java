@@ -219,23 +219,31 @@ public class GenerarCobros extends javax.swing.JFrame {
             while ((linea = br.readLine()) != null) {
                 String[] partes = linea.split(",");
                 boolean statusCobro = Boolean.parseBoolean(partes[7]);
-                Date fechaCobro = parsearFecha(partes[2], sdf); // Ajusta aquí
-                System.out.println("UAAAAAAA.");
+                Date fechaCobro = parsearFecha(partes[2], sdf);
+
                 if (fechaCobro != null && fechaCobro.after(fechaInicio) && fechaCobro.before(fechaFin) && !statusCobro) {
                     // Procesar este cobro
-                    System.out.println("mmmmmmm");
+                    double montoPagado = Double.parseDouble(partes[6]); // Monto que se pagó en esta cuota
+                    String idPrestamo = partes[0]; // Identificador del préstamo
+
+                    // Actualizar el archivo de Préstamo
+                    actualizarPrestamo(idPrestamo, montoPagado);
+
+                    // Marcar el cobro como realizado (statusCobro = true)
+                    partes[7] = "true";
+                    linea = String.join(",", partes);
                     cobrosActualizados.add(linea);
-                    System.out.println("truco");
+
                 } else {
                     bw.write(linea);
                     bw.newLine();
                 }
-                System.out.println("mauluma.");
             }
 
-            // Procesar los cobros actualizados
+            // Escribir los cobros actualizados en el archivo temporal
             for (String cobro : cobrosActualizados) {
-                procesarCobro(cobro);
+                bw.write(cobro);
+                bw.newLine();
             }
 
         } catch (IOException e) {
@@ -256,76 +264,41 @@ public class GenerarCobros extends javax.swing.JFrame {
         System.out.println("Cobros generados exitosamente.");
     }
 
-    public static void procesarCobro(String cobro) throws IOException {
-        String[] partes = cobro.split(",");
-        // Aquí se debe implementar la lógica específica para actualizar el estado del cobro
+    private static void actualizarPrestamo(String idPrestamo, double montoPagado) {
+        File archivoPrestamosOriginal = new File("Prestamos.txt");
+        File archivoPrestamosTemporal = new File("Prestamos.tmp");
 
-        // Ejemplo de actualización (este código debe ser adaptado según la estructura de tus archivos)
-        String idPrestamo = partes[0];
-        double montoCobro = Double.parseDouble(partes[2]);
-        boolean statusCuota = Boolean.parseBoolean(partes[7]);
-
-        // Leer el archivo de préstamos y actualizar el balance
-        File archivoPrestamos = new File("Prestamos.txt");
-        File archivoTemporal = new File("Prestamos.tmp");
-
-        try (BufferedReader br = new BufferedReader(new FileReader(archivoPrestamos)); BufferedWriter bw = new BufferedWriter(new FileWriter(archivoTemporal))) {
-
+        try (BufferedReader br = new BufferedReader(new FileReader(archivoPrestamosOriginal)); BufferedWriter bw = new BufferedWriter(new FileWriter(archivoPrestamosTemporal))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                String[] datosPrestamo = linea.split(",");
-                if (datosPrestamo[0].equals(idPrestamo)) {
-                    double balancePrestamo = Double.parseDouble(datosPrestamo[2]);
-                    balancePrestamo -= montoCobro;
+                String[] partes = linea.split(",");
+                if (partes[0].equals(idPrestamo)) {
+                    double balancePrestamo = Double.parseDouble(partes[9]); // Balance actual del préstamo
+                    balancePrestamo -= montoPagado;
 
-                    // Actualizar el estado de la cuota
-                    statusCuota = balancePrestamo <= 0;
+                    partes[9] = String.format("%.2f", balancePrestamo); // Actualizar balance
 
                     if (balancePrestamo <= 0) {
-                        datosPrestamo[2] = "0"; // Balance del préstamo
-                        datosPrestamo[3] = "true"; // Estado del préstamo
-                    } else {
-                        datosPrestamo[2] = String.valueOf(balancePrestamo);
+                        partes[3] = "true"; // Estado_Prestamo = true si el balance es cero
                     }
 
-                    linea = String.join(",", datosPrestamo);
+                    linea = String.join(",", partes);
                 }
                 bw.write(linea);
                 bw.newLine();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error al actualizar el archivo de préstamos.");
         }
 
-        if (archivoPrestamos.delete()) {
-            if (!archivoTemporal.renameTo(archivoPrestamos)) {
+        // Renombrar archivo temporal
+        if (archivoPrestamosOriginal.delete()) {
+            if (!archivoPrestamosTemporal.renameTo(archivoPrestamosOriginal)) {
                 System.out.println("No se pudo renombrar el archivo temporal de préstamos.");
             }
         } else {
             System.out.println("No se pudo eliminar el archivo original de préstamos.");
-        }
-
-        // Actualizar el estado del cobro en el archivo de cobros
-        File archivoCobros = new File("Cobro_Prestamo.txt");
-        File archivoCobrosTemporal = new File("Cobro_Prestamo.tmp");
-
-        try (BufferedReader brCobros = new BufferedReader(new FileReader(archivoCobros)); BufferedWriter bwCobros = new BufferedWriter(new FileWriter(archivoCobrosTemporal))) {
-
-            String lineaCobro;
-            while ((lineaCobro = brCobros.readLine()) != null) {
-                if (lineaCobro.equals(cobro)) {
-                    // Actualizar el estado del cobro a True
-                    lineaCobro = lineaCobro.replace("false", "true");
-                }
-                bwCobros.write(lineaCobro);
-                bwCobros.newLine();
-            }
-        }
-
-        if (archivoCobros.delete()) {
-            if (!archivoCobrosTemporal.renameTo(archivoCobros)) {
-                System.out.println("No se pudo renombrar el archivo temporal de cobros.");
-            }
-        } else {
-            System.out.println("No se pudo eliminar el archivo original de cobros.");
         }
     }
 
