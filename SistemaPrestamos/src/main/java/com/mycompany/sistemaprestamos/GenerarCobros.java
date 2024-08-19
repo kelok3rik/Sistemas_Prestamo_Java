@@ -4,6 +4,7 @@
  */
 package com.mycompany.sistemaprestamos;
 
+import javax.swing.JOptionPane;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -186,12 +187,15 @@ public class GenerarCobros extends javax.swing.JFrame {
         Date fechaFin = parsearFecha(fechaFinStr);
 
         if (fechaInicio == null || fechaFin == null) {
-            System.out.println("Fechas inválidas. Por favor, ingrese fechas válidas.");
+            JOptionPane.showMessageDialog(null, "Fechas inválidas. Por favor, ingrese fechas válidas.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         // Llamar al método de generación de cobros
-        generarCobros(fechaInicio, fechaFin);
+        int totalPagosGenerados = generarCobros(fechaInicio, fechaFin);
+
+        // Mostrar un mensaje con la cantidad total de pagos generados
+        JOptionPane.showMessageDialog(null, "Cobros generados exitosamente.\nCantidad total de pagos generados: " + totalPagosGenerados, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
     }//GEN-LAST:event_btnGenerarCobrosActionPerformed
 
@@ -205,12 +209,12 @@ public class GenerarCobros extends javax.swing.JFrame {
         }
     }
 
-    public static void generarCobros(Date fechaInicio, Date fechaFin) {
+    public static int generarCobros(Date fechaInicio, Date fechaFin) {
         List<String> cobrosActualizados = new ArrayList<>();
         File archivoOriginal = new File("Cuota_Prestamo.txt");
         File archivoTemporal = new File("Cuota_Prestamo.tmp");
+        int pagosGenerados = 0; // Contador para los pagos generados
 
-        // Define el formato de fecha
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         try (BufferedReader br = new BufferedReader(new FileReader(archivoOriginal)); BufferedWriter bw = new BufferedWriter(new FileWriter(archivoTemporal))) {
@@ -222,8 +226,7 @@ public class GenerarCobros extends javax.swing.JFrame {
                 Date fechaCobro = parsearFecha(partes[2], sdf);
 
                 if (fechaCobro != null && fechaCobro.after(fechaInicio) && fechaCobro.before(fechaFin) && !statusCobro) {
-                    // Procesar este cobro
-                    double montoPagado = Double.parseDouble(partes[6]); // Monto que se pagó en esta cuota
+                    double montoPagado = Double.parseDouble(partes[4]); // Monto que se pagó en esta cuota
                     String idPrestamo = partes[0]; // Identificador del préstamo
 
                     // Actualizar el archivo de Préstamo
@@ -232,41 +235,35 @@ public class GenerarCobros extends javax.swing.JFrame {
                     // Marcar el cobro como realizado (statusCobro = true)
                     partes[7] = "true";
                     linea = String.join(",", partes);
-                    cobrosActualizados.add(linea);
 
-                } else {
-                    bw.write(linea);
-                    bw.newLine();
+                    pagosGenerados++; // Incrementar el contador de pagos generados
                 }
-            }
 
-            // Escribir los cobros actualizados en el archivo temporal
-            for (String cobro : cobrosActualizados) {
-                bw.write(cobro);
+                bw.write(linea);
                 bw.newLine();
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error al procesar los cobros.");
-            return;
+            JOptionPane.showMessageDialog(null, "Error al procesar los cobros: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return 0; // Retornar 0 en caso de error
         }
 
         // Renombrar archivo temporal
         if (archivoOriginal.delete()) {
             if (!archivoTemporal.renameTo(archivoOriginal)) {
-                System.out.println("No se pudo renombrar el archivo temporal.");
+                JOptionPane.showMessageDialog(null, "No se pudo renombrar el archivo temporal.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            System.out.println("No se pudo eliminar el archivo original.");
+            JOptionPane.showMessageDialog(null, "No se pudo eliminar el archivo original.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        System.out.println("Cobros generados exitosamente.");
+        return pagosGenerados; // Retornar la cantidad total de pagos generados
     }
 
     private static void actualizarPrestamo(String idPrestamo, double montoPagado) {
         File archivoPrestamosOriginal = new File("Prestamos.txt");
         File archivoPrestamosTemporal = new File("Prestamos.tmp");
+        int pagosModificados = 0; // Contador para los pagos modificados
 
         try (BufferedReader br = new BufferedReader(new FileReader(archivoPrestamosOriginal)); BufferedWriter bw = new BufferedWriter(new FileWriter(archivoPrestamosTemporal))) {
             String linea;
@@ -276,30 +273,39 @@ public class GenerarCobros extends javax.swing.JFrame {
                     double balancePrestamo = Double.parseDouble(partes[9]); // Balance actual del préstamo
                     balancePrestamo -= montoPagado;
 
+                    // Asegurarse de que el balance no sea negativo
+                    if (balancePrestamo < 0) {
+                        balancePrestamo = 0;
+                    }
+
                     partes[9] = String.format("%.2f", balancePrestamo); // Actualizar balance
 
                     if (balancePrestamo <= 0) {
-                        partes[3] = "true"; // Estado_Prestamo = true si el balance es cero
+                        partes[3] = "true"; // Estado_Prestamo = true si el balance es cero o menor
                     }
 
                     linea = String.join(",", partes);
+                    pagosModificados++; // Incrementar el contador de pagos modificados
                 }
                 bw.write(linea);
                 bw.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error al actualizar el archivo de préstamos.");
+            JOptionPane.showMessageDialog(null, "Error al actualizar el archivo de préstamos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         // Renombrar archivo temporal
         if (archivoPrestamosOriginal.delete()) {
             if (!archivoPrestamosTemporal.renameTo(archivoPrestamosOriginal)) {
-                System.out.println("No se pudo renombrar el archivo temporal de préstamos.");
+                JOptionPane.showMessageDialog(null, "No se pudo renombrar el archivo temporal de préstamos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            System.out.println("No se pudo eliminar el archivo original de préstamos.");
+            JOptionPane.showMessageDialog(null, "No se pudo eliminar el archivo original de préstamos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+        // Mostrar un único mensaje con la cantidad total de pagos modificados
+        //   JOptionPane.showMessageDialog(null, "Préstamos actualizados exitosamente.\nCantidad total de pagos modificados: " + pagosModificados, "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private static Date parsearFecha(String fechaStr, SimpleDateFormat sdf) {

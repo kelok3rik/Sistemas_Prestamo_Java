@@ -5,23 +5,28 @@
 package prestamo.mantenimiento;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-
-
-
-
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author erikr
  */
 public class MantenimientoUsuarios extends javax.swing.JFrame {
+
+    private boolean isModifying = false;
 
     /**
      * Creates new form MantenimientoUsuarios
@@ -62,6 +67,11 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
         jLabel2.setText("USUARIO");
 
         txtLogin.setName("txtLogin"); // NOI18N
+        txtLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtLoginActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("CONTRASENIA");
 
@@ -126,8 +136,9 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
                                 .addComponent(jLabel7)))
                         .addGap(0, 113, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
@@ -179,7 +190,7 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
         String email = txtEmail.getText();
         String nivelAcceso = (String) cbNivelAcceso.getSelectedItem();
 
-        // Validate inputs
+        // Validación de entradas
         if (login.isEmpty() || password.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || email.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos los campos deben ser llenados.");
             return;
@@ -195,14 +206,49 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("usuarios.txt", true))) {
-            writer.write(login + "," + password + "," + nombre + "," + apellidos + "," + email + "," + nivelAcceso);
-            writer.newLine();
-            JOptionPane.showMessageDialog(this, "Usuario guardado exitosamente.");
-            limpiarCampos();
+        boolean userExists = false;
+        File originalFile = new File("usuarios.txt");
+        File tempFile = new File("usuarios_temp.txt");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(originalFile)); BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[0].equals(login)) {
+                    // Modificar usuario existente
+                    writer.write(login + "," + password + "," + nombre + "," + apellidos + "," + email + "," + nivelAcceso);
+                    userExists = true;
+                } else {
+                    writer.write(line);
+                }
+                writer.newLine();
+            }
+
+            if (!userExists) {
+                // Crear nuevo usuario si no existe
+                writer.write(login + "," + password + "," + nombre + "," + apellidos + "," + email + "," + nivelAcceso);
+                writer.newLine();
+                JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Usuario modificado exitosamente.");
+            }
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al guardar el usuario: " + e.getMessage());
+            return;
         }
+
+        // Renombrar el archivo temporal al original
+        if (!originalFile.delete()) {
+            JOptionPane.showMessageDialog(this, "No se pudo eliminar el archivo original.");
+            return;
+        }
+        if (!tempFile.renameTo(originalFile)) {
+            JOptionPane.showMessageDialog(this, "No se pudo renombrar el archivo temporal.");
+        }
+
+        limpiarCampos();
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -210,6 +256,46 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
         // TODO add your handling code here:
         limpiarCampos();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtLoginActionPerformed
+        String login = txtLogin.getText();
+
+        if (login.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un login.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("usuarios.txt"))) {
+            String line;
+            boolean userFound = false;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[0].equals(login)) {
+                    // Usuario encontrado, cargar los datos y cambiar a modo modificación
+                    txtPassword.setText(data[1]);
+                    txtNombre.setText(data[2]);
+                    txtApellidos.setText(data[3]);
+                    txtEmail.setText(data[4]);
+                    cbNivelAcceso.setSelectedItem(data[5]);
+
+                    isModifying = true;
+                    JOptionPane.showMessageDialog(this, "Usuario encontrado. Modo modificación activado.");
+                    userFound = true;
+                    break;
+                }
+            }
+
+            if (!userFound) {
+                // Usuario no encontrado, se creará un nuevo usuario
+                JOptionPane.showMessageDialog(this, "Usuario no encontrado. Modo creación activado.");
+                isModifying = false;
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de usuarios: " + e.getMessage());
+        }
+    }//GEN-LAST:event_txtLoginActionPerformed
 
     private void limpiarCampos() {
         txtLogin.setText("");

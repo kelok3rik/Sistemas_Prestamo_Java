@@ -12,6 +12,13 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+
 /**
  *
  * @author erikr
@@ -32,7 +39,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
     private void initTableModel() {
         tblModel = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"CUOTA", "FECHA", "MONTO", "ESTADO"}
+                new String[]{"ID COBRO", "FECHA", "CUOTA", "VALOR CAPITAL", "VALOR INTERNO", "ESTADO"}
         );
         jTable1.setModel(tblModel);
     }
@@ -51,7 +58,6 @@ public class MovimientoCobros extends javax.swing.JFrame {
         txtIdCobro = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtIdCteCobro = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtFechaCobro = new javax.swing.JTextField();
         txtValorCobro = new javax.swing.JTextField();
@@ -60,6 +66,10 @@ public class MovimientoCobros extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        txtConceptoCobro = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtNombreCliente = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -81,8 +91,6 @@ public class MovimientoCobros extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("FECHA");
-
         jLabel5.setText("VALOR COBRO");
 
         txtFechaCobro.setEditable(false);
@@ -98,17 +106,17 @@ public class MovimientoCobros extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "CUOTA", "FECHA", "MONTO", "ESTADO"
+                "ID", "# CUOTA", "FECHA", "CUOTA", "VALOR CAPITAL", "VALOR INTERNO", "ESTADO"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -125,33 +133,47 @@ public class MovimientoCobros extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setText("CONCEPTO");
+
+        jLabel4.setText("NOMBRE:");
+
+        txtNombreCliente.setEditable(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(126, 126, 126)
-                            .addComponent(jLabel1))
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel2))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtIdCteCobro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtIdCobro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jLabel4)
-                            .addGap(49, 49, 49)
-                            .addComponent(txtFechaCobro, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                                .addComponent(txtConceptoCobro, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(126, 126, 126)
+                                .addComponent(jLabel1))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtIdCteCobro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtIdCobro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 33, Short.MAX_VALUE)
+                                .addComponent(txtFechaCobro, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNombreCliente)
+                                .addGap(13, 13, 13))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(148, 148, 148)
                         .addComponent(jLabel6))
@@ -164,14 +186,19 @@ public class MovimientoCobros extends javax.swing.JFrame {
                         .addGap(112, 112, 112)
                         .addComponent(btnCobrar)
                         .addGap(18, 18, 18)
-                        .addComponent(btnLimpiar)))
-                .addContainerGap(24, Short.MAX_VALUE))
+                        .addComponent(btnLimpiar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(6, 6, 6))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtFechaCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -179,12 +206,14 @@ public class MovimientoCobros extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtIdCteCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtIdCteCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(txtFechaCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txtNombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtConceptoCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(txtValorCobro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -196,7 +225,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(75, 75, 75))
+                .addGap(39, 39, 39))
         );
 
         pack();
@@ -210,7 +239,6 @@ public class MovimientoCobros extends javax.swing.JFrame {
     private void btnCobrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCobrarActionPerformed
         // TODO add your handling code here:
         // Obtener datos del formulario
-        // Verificar que una fila esté seleccionada en la tabla
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione una cuota para cobrar.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -223,7 +251,6 @@ public class MovimientoCobros extends javax.swing.JFrame {
         String monto = jTable1.getValueAt(selectedRow, 2).toString();
         String estado = jTable1.getValueAt(selectedRow, 3).toString();
 
-        // Validar que el monto de cobro es correcto
         String valorCobro = txtValorCobro.getText().trim();
         if (valorCobro.isEmpty()) {
             JOptionPane.showMessageDialog(this, "El valor de cobro no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -265,7 +292,14 @@ public class MovimientoCobros extends javax.swing.JFrame {
                     // Actualizar archivo de cobros
                     File archivoCobro = new File("Cobro_Prestamo.txt");
                     try (BufferedWriter cobroWriter = new BufferedWriter(new FileWriter(archivoCobro, true))) {
-                        String lineaCobro = txtIdCobro.getText().trim() + "," + idCliente + "," + valorCobro + "," + new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+                        String lineaCobro = txtIdCobro.getText().trim() + ","
+                                + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ","
+                                + idCliente + ","
+                                + cuota + ","
+                                + valorCobro + ","
+                                + txtConceptoCobro.getText().trim() + ","
+                                + "true";
+
                         cobroWriter.write(lineaCobro);
                         cobroWriter.newLine();
                     }
@@ -296,28 +330,68 @@ public class MovimientoCobros extends javax.swing.JFrame {
         // Restar el monto cobrado del balance en Prestamo.txt
         actualizarBalancePrestamo(idCliente, valor);
 
+        // Generar PDF con detalles del cobro
+        try {
+            generarReciboCobroPDF(txtIdCobro.getText().trim(), new SimpleDateFormat("dd/MM/yyyy").format(new Date()), idCliente, cuota, monto, valorCobro);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al generar el PDF del cobro.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
         // Limpiar campos y actualizar tabla después del cobro
         limpiarCampos();
-        buscarCuotasPorCliente();
+       // buscarCuotasPorCliente();
     }//GEN-LAST:event_btnCobrarActionPerformed
     private void actualizarBalancePrestamo(String idCliente, double montoCobrado) {
         File archivoPrestamos = new File("prestamos.txt");
         File archivoPrestamosTemp = new File("Prestamo_Temp.txt");
 
+        if (!archivoPrestamos.exists()) {
+            JOptionPane.showMessageDialog(this, "El archivo de préstamos no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         try (BufferedReader reader = new BufferedReader(new FileReader(archivoPrestamos)); BufferedWriter writer = new BufferedWriter(new FileWriter(archivoPrestamosTemp))) {
 
             String line;
+            boolean actualizado = false;
+
             while ((line = reader.readLine()) != null) {
                 String[] atributos = line.split(",");
-                if (atributos[1].equals(idCliente)) { // Buscar el préstamo correspondiente al cliente
-                    double balanceActual = Double.parseDouble(atributos[9]); // Suponiendo que el balance está en la posición 6
-                    double nuevoBalance = balanceActual - montoCobrado;
-                    atributos[9] = String.valueOf(nuevoBalance);
+
+                // Validar el formato de la línea
+                if (atributos.length <= 9) {
+                    JOptionPane.showMessageDialog(this, "Formato de archivo incorrecto en la línea: " + line, "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
                 }
 
-                // Escribir la línea actualizada en el archivo temporal
+                if (atributos[1].equals(idCliente)) { // Buscar el préstamo correspondiente al cliente
+                    try {
+                        double balanceActual = Double.parseDouble(atributos[9]); // Suponiendo que el balance está en la posición 9
+                        double nuevoBalance = balanceActual - montoCobrado;
+
+                        // Si el nuevo balance es cero, marcar el estado como true
+                        if (nuevoBalance <= 0) {
+                            atributos[9] = "0"; // Asegurar que el balance sea cero
+                            atributos[3] = "true"; // Suponiendo que el estado está en la posición 10
+                        } else {
+                            atributos[9] = String.valueOf(nuevoBalance);
+                        }
+
+                        actualizado = true;
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(this, "Error al parsear el balance: " + atributos[9], "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
+                }
+
+                // Escribir la línea (actualizada o no) en el archivo temporal
                 writer.write(String.join(",", atributos));
                 writer.newLine();
+            }
+
+            if (!actualizado) {
+                JOptionPane.showMessageDialog(this, "No se encontró el préstamo con ID: " + idCliente, "Advertencia", JOptionPane.WARNING_MESSAGE);
             }
 
         } catch (IOException e) {
@@ -327,9 +401,11 @@ public class MovimientoCobros extends javax.swing.JFrame {
 
         // Reemplazar el archivo original por el archivo temporal
         if (archivoPrestamos.delete()) {
-            archivoPrestamosTemp.renameTo(archivoPrestamos);
+            if (!archivoPrestamosTemp.renameTo(archivoPrestamos)) {
+                JOptionPane.showMessageDialog(this, "Error al reemplazar el archivo de préstamos.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
-            JOptionPane.showMessageDialog(this, "Error al actualizar el archivo de préstamos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al eliminar el archivo de préstamos original.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -350,31 +426,68 @@ public class MovimientoCobros extends javax.swing.JFrame {
         txtIdCobro.setText("");
         txtIdCteCobro.setText("");
         txtValorCobro.setText("");
+        txtConceptoCobro.setText("");
 
     }
 
     private void buscarCuotasPorCliente() {
         String idCliente = txtIdCteCobro.getText().trim();
         File archivoCuotas = new File("Cuota_Prestamo.txt");
+        File archivoClientes = new File("Clientes.txt"); // Archivo de clientes
 
         tblModel.setRowCount(0); // Limpiar tabla antes de cargar nuevas cuotas
 
+        if (idCliente.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El ID del cliente no puede estar vacío.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Buscar el nombre del cliente y mostrarlo en txtNombreCliente
+        try (BufferedReader clienteReader = new BufferedReader(new FileReader(archivoClientes))) {
+            String line;
+            boolean clienteEncontrado = false;
+
+            while ((line = clienteReader.readLine()) != null) {
+                String[] atributosCliente = line.split(",");
+                if (atributosCliente[0].equals(idCliente)) { // Suponiendo que el ID del cliente está en la primera posición
+                    txtNombreCliente.setText(atributosCliente[1]); // Suponiendo que el nombre está en la segunda posición
+                    clienteEncontrado = true;
+                    break;
+                }
+            }
+
+            if (!clienteEncontrado) {
+                JOptionPane.showMessageDialog(this, "No se encontró el cliente con ID: " + idCliente, "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de clientes.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+
+        // Buscar las cuotas del cliente
         try (BufferedReader reader = new BufferedReader(new FileReader(archivoCuotas))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] atributos = line.split(",");
-                if (atributos[1].equals(idCliente) && atributos[7].equals("false")) { // Asegurarse de que la cuota esté pendiente
+
+                // Comprobar si la cuota pertenece al cliente y está pendiente
+                if (atributos[1].equals(idCliente) && atributos[7].equals("false")) {
                     tblModel.addRow(new Object[]{
                         atributos[3], // CUOTA
                         atributos[2], // FECHA
                         atributos[4], // MONTO
+                        atributos[5], // VALOR CAPITAL
+                        atributos[6], // VALOR INTERNO
                         atributos[7] // ESTADO
                     });
                 }
             }
         } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -410,6 +523,44 @@ public class MovimientoCobros extends javax.swing.JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "ERROR", "Información", JOptionPane.INFORMATION_MESSAGE);
         }
+    }
+
+    // Método para generar el PDF del recibo de cobro
+    private void generarReciboCobroPDF(String idCobro, String fechaCobro, String idCliente, String cuota, String montoCuota, String valorCobrado) throws IOException {
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        document.addPage(page);
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+        // Título
+        contentStream.beginText();
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12);
+        contentStream.newLineAtOffset(220, 750);
+        contentStream.showText("Recibo de Cobro");
+        contentStream.endText();
+
+        // Información del cobro
+        contentStream.beginText();
+        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8);
+        contentStream.newLineAtOffset(50, 700);
+        contentStream.showText("ID de Cobro: " + idCobro);
+        contentStream.newLineAtOffset(0, -20);
+        contentStream.showText("Fecha de Cobro: " + fechaCobro);
+        contentStream.newLineAtOffset(0, -20);
+        contentStream.showText("ID del Cliente: " + idCliente);
+        contentStream.newLineAtOffset(0, -20);
+        contentStream.showText("Cuota: " + cuota);
+        contentStream.newLineAtOffset(0, -20);
+        contentStream.showText("Monto de la Cuota: " + montoCuota);
+        contentStream.newLineAtOffset(0, -20);
+        contentStream.showText("Monto Cobrado: " + valorCobrado);
+        contentStream.endText();
+
+        // Finalizar y guardar el PDF
+        contentStream.close();
+        document.save("Recibo_Cobro_" + idCobro + ".pdf");
+        document.close();
     }
 
     public static void main(String args[]) {
@@ -453,11 +604,14 @@ public class MovimientoCobros extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField txtConceptoCobro;
     private javax.swing.JTextField txtFechaCobro;
     private javax.swing.JTextField txtIdCobro;
     private javax.swing.JTextField txtIdCteCobro;
+    private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtValorCobro;
     // End of variables declaration//GEN-END:variables
 }

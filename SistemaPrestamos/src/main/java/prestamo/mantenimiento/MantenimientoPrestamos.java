@@ -38,6 +38,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+
 //import com.itextpdf.*;
 /**
  *
@@ -237,23 +244,25 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                                     .addComponent(jLabel12))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel15))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(txtPlazoPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel14)
-                                        .addGap(0, 106, Short.MAX_VALUE))
                                     .addComponent(txtBalancePrestamo)
                                     .addComponent(txtFechaFinal, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(txtTipoGarantia)
-                                    .addComponent(txtMontoPrestamo, javax.swing.GroupLayout.Alignment.TRAILING)))))
+                                    .addComponent(txtMontoPrestamo, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel15))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(txtPlazoPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel14)))
+                                        .addGap(0, 12, Short.MAX_VALUE))))))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -327,7 +336,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         pack();
@@ -582,6 +591,10 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 }
 
                 JOptionPane.showMessageDialog(this, "Cuotas generadas y guardadas exitosamente.");
+
+                // Crear el PDF con las cuotas del préstamo
+                createPDF(idPrestamo);
+
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Error en los datos del préstamo. Asegúrese de ingresar valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IOException e) {
@@ -590,7 +603,98 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void createPDF(String idPrestamo) {
+        PDDocument document = new PDDocument();
+        try {
+            // Crear una nueva página
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            // Crear flujo de contenido para la página
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            // Título del documento
+            contentStream.beginText();
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12);
+            contentStream.newLineAtOffset(220, 750);
+            contentStream.showText("Detalle de Cuotas del Préstamo ID: " + idPrestamo);
+            contentStream.endText();
+
+            // Posición inicial para la tabla
+            float margin = 50;
+            float yPosition = 700;
+            float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
+            float tableHeight = 20f;
+            float rowHeight = 20f;
+            float cellMargin = 5f;
+
+            // Definir encabezados de la tabla
+            String[] headers = {"ID Préstamo", "ID Cliente", "Fecha Cuota", "Número Cuota", "Valor Cuota", "Amortización", "Interés"};
+
+            // Dibujar encabezados
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8);
+            float headerXPosition = margin;
+            for (String header : headers) {
+                contentStream.beginText();
+                contentStream.newLineAtOffset(headerXPosition + cellMargin, yPosition + cellMargin);
+                contentStream.showText(header);
+                contentStream.endText();
+                headerXPosition += tableWidth / headers.length;
+            }
+            yPosition -= rowHeight;
+
+            // Leer cuotas del archivo y agregarlas a la tabla
+            try (BufferedReader reader = new BufferedReader(new FileReader("Cuota_Prestamo.txt"))) {
+                String line;
+                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8);
+                while ((line = reader.readLine()) != null) {
+                    String[] datos = line.split(",");
+                    if (datos.length >= 8 && datos[0].equals(idPrestamo)) {
+                        float cellXPosition = margin;
+                        for (int i = 0; i < headers.length; i++) {
+                            contentStream.beginText();
+                            contentStream.newLineAtOffset(cellXPosition + cellMargin, yPosition + cellMargin);
+                            contentStream.showText(datos[i]);
+                            contentStream.endText();
+                            cellXPosition += tableWidth / headers.length;
+                        }
+                        yPosition -= rowHeight;
+
+                        // Verificar si se necesita una nueva página
+                        if (yPosition < margin) {
+                            contentStream.close();
+                            page = new PDPage();
+                            document.addPage(page);
+                            contentStream = new PDPageContentStream(document, page);
+                            yPosition = 700;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Cerrar el flujo de contenido
+            contentStream.close();
+
+            // Guardar el documento
+            String fileName = "CUOTA_PRESTAMO_" + idPrestamo + ".pdf";
+            document.save(fileName);
+            JOptionPane.showMessageDialog(this, "PDF generado exitosamente: " + fileName);
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al crear el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                document.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private String calcularFechaCuota(String fechaInicio, int cuotaNumero) throws ParseException {
         // Definir el formato de la fecha
@@ -737,20 +841,23 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         try {
             // Obtener los valores de la interfaz gráfica
             double montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText());
-            double tasaInteresTotal = Double.parseDouble(txtTasaPrestamo.getText()) / 100; // Convertir a porcentaje
+            double tasaAnual = Double.parseDouble(txtTasaPrestamo.getText()) / 100; // Convertir a porcentaje
             int meses = (Integer) txtPlazoPrestamo.getValue();
 
-            // Calcular el interés total a lo largo del préstamo
-            double interesTotal = montoPrestamo * tasaInteresTotal;
+            // Convertir la tasa anual a tasa mensual
+            double tasaMensual = tasaAnual / 12;
 
-            // Sumar el interés total al monto del préstamo para obtener el monto total a pagar
-            double montoTotalPagar = montoPrestamo + interesTotal;
+            // Verificar si la tasa mensual es cero
+            if (tasaMensual == 0) {
+                JOptionPane.showMessageDialog(this, "La tasa de interés mensual no puede ser cero.", "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Salir del método en caso de error
+            }
 
-            // Calcular la cuota fija mensual
-            double cuotaFija = montoTotalPagar / meses;
+            // Calcular la cuota fija mensual utilizando la fórmula de amortización
+            double cuotaFija = (montoPrestamo * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -meses));
 
             // Inicializar saldo pendiente
-            double saldoPendiente = montoTotalPagar;
+            double saldoPendiente = montoPrestamo;
             double valorInteresCuota;
             double valorAmortizacionCuota;
 
@@ -759,8 +866,8 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
             // Calcular y mostrar los detalles para cada mes
             for (int mes = 1; mes <= meses; mes++) {
-                valorInteresCuota = interesTotal / meses; // Distribuir el interés total entre todas las cuotas
-                valorAmortizacionCuota = cuotaFija - valorInteresCuota;  // Parte de la cuota que amortiza el capital
+                valorInteresCuota = saldoPendiente * tasaMensual; // Interés de la cuota
+                valorAmortizacionCuota = cuotaFija - valorInteresCuota; // Parte de la cuota que amortiza el capital
                 saldoPendiente -= valorAmortizacionCuota; // Actualizar saldo pendiente
 
                 // Mostrar los detalles de la cuota en la consola

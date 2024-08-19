@@ -9,8 +9,10 @@ import prestamo.mantenimiento.MantenimientoGarantias;
 import prestamo.mantenimiento.MantenimientoClientes;
 import prestamo.mantenimiento.MantenimientoFiador;
 import prestamo.mantenimiento.MantenimientoPrestamos;
-
-
+import prestamo.consultas.ConsultaGarantias;
+import prestamo.consultas.ConsultaUsuarios;
+import prestamo.consultas.ConsultasClientes;
+import prestamo.consultas.ConsultasFiador;
 
 /**
  *
@@ -43,6 +45,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         btnMantenimientoUsuarios = new javax.swing.JMenuItem();
@@ -66,8 +69,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenuItem16 = new javax.swing.JMenuItem();
         jMenuItem17 = new javax.swing.JMenuItem();
         jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        jLabel1.setText("LeBron el goat");
 
         jMenu3.setText("Mantenimientos");
 
@@ -148,34 +155,57 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenu4.setText("Consultas");
 
         jMenuItem9.setText("De Garantias");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem9);
 
         jMenuItem10.setText("De Usuarios");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem10);
 
         jMenuItem11.setText("De fiador");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem11);
 
         jMenuItem12.setText("De Cliente");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem12);
 
-        jMenuItem13.setText("jMenuItem13");
+        jMenuItem13.setText("De cliente por nombre");
         jMenu4.add(jMenuItem13);
 
-        jMenuItem14.setText("jMenuItem14");
+        jMenuItem14.setText("De prestamos");
         jMenu4.add(jMenuItem14);
 
-        jMenuItem15.setText("jMenuItem15");
+        jMenuItem15.setText("De prestamos por fecha");
         jMenu4.add(jMenuItem15);
 
-        jMenuItem16.setText("jMenuItem16");
+        jMenuItem16.setText("De prestamos por fecha vencimiento");
         jMenu4.add(jMenuItem16);
 
-        jMenuItem17.setText("jMenuItem17");
+        jMenuItem17.setText("De prestamos con saldos pendientes");
         jMenu4.add(jMenuItem17);
 
-        jMenuItem18.setText("jMenuItem18");
+        jMenuItem18.setText("De cobro por fecha");
         jMenu4.add(jMenuItem18);
+
+        jMenuItem1.setText("De cobro por vencido");
+        jMenu4.add(jMenuItem1);
 
         jMenuBar1.add(jMenu4);
 
@@ -185,11 +215,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 753, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(694, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 308, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(291, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addContainerGap())
         );
 
         pack();
@@ -199,7 +235,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         MantenimientoGarantias MntGarantias = new MantenimientoGarantias();
         MntGarantias.setVisible(true);
-        
+
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void btnMantenimientoUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMantenimientoUsuariosActionPerformed
@@ -232,12 +268,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         MovimientoCobros mvtCobros = new MovimientoCobros();
         mvtCobros.setVisible(true);
-        
+
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
         // TODO add your handling code here:
-        GenerarCobros  gnrCobros = new GenerarCobros();
+        GenerarCobros gnrCobros = new GenerarCobros();
         gnrCobros.setVisible(true);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
@@ -246,6 +282,31 @@ public class MenuPrincipal extends javax.swing.JFrame {
         ReversarCobros rvrCobros = new ReversarCobros();
         rvrCobros.setVisible(true);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // TODO add your handling code here:
+        ConsultaGarantias cstg = new ConsultaGarantias();
+        cstg.setVisible(true);
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+        ConsultaUsuarios cstu = new ConsultaUsuarios();
+        cstu.setVisible(true);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        // TODO add your handling code here:
+        ConsultasFiador cstf = new ConsultasFiador();
+        cstf.setVisible(true);
+        
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // TODO add your handling code here:
+        ConsultasClientes cstc = new ConsultasClientes();
+        cstc.setVisible(true);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -284,11 +345,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem btnMantenimientoUsuarios;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
