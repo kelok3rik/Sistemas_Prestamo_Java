@@ -4,17 +4,27 @@
  */
 package prestamo.consultas;
 
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author erikr
  */
 public class ConsultPrestamosSaldosPendientes extends javax.swing.JFrame {
 
+    private DefaultTableModel tableModel;
+
     /**
      * Creates new form ConsultPrestamosSaldosPendientes
      */
     public ConsultPrestamosSaldosPendientes() {
         initComponents();
+        initializeTableModel();
+        cargarPrestamosConSaldoPendiente();
     }
 
     /**
@@ -26,22 +36,93 @@ public class ConsultPrestamosSaldosPendientes extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID PRESTAMO", "ID CLIENTE", "ID FIADOR", "ESTADO", "EMISION", "CUOTAS", "FINAL", "GARANTIA", "MONTO", "BALANCE", "TASA", "CUOTA FIJA"
+            }
+        ));
+        jTable1.setEnabled(false);
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel1.setText("CONSULTA PRESTAMOS SALDOS PENDIENTES");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 969, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(315, 315, 315)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void initializeTableModel() {
+        tableModel = new DefaultTableModel(new Object[]{
+            "ID Préstamo", "ID Cliente", "ID Fiador", "Estado", "Fecha Inicio", "Plazo", "Fecha Final", "Tipo Garantía", "Monto", "Balance", "Tasa", "Cuota Fija"
+        }, 0);
+        jTable1.setModel(tableModel);
+    }
+
+    private void cargarPrestamosConSaldoPendiente() {
+        tableModel.setRowCount(0);
+
+        try (BufferedReader br = new BufferedReader(new FileReader("prestamos.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length == 12) {
+                    double balance = Double.parseDouble(partes[9]); // Balance
+                    if (balance > 0) {
+                        tableModel.addRow(new Object[]{
+                            partes[0], // ID Préstamo
+                            partes[1], // ID Cliente
+                            partes[2], // ID Fiador
+                            partes[3], // Estado
+                            partes[4], // Fecha Inicio
+                            partes[5], // Plazo
+                            partes[6], // Fecha Final
+                            partes[7], // Tipo Garantía
+                            Double.parseDouble(partes[8]), // Monto
+                            balance, // Balance
+                            Double.parseDouble(partes[10]), // Tasa
+                            Double.parseDouble(partes[11])  // Cuota Fija
+                        });
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de préstamos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -78,5 +159,8 @@ public class ConsultPrestamosSaldosPendientes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

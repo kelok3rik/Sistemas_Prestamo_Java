@@ -256,15 +256,14 @@ public class MovimientoCobros extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIdCobroActionPerformed
 
     private void btnCobrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCobrarActionPerformed
-        // TODO add your handling code here:
-        // Obtener datos del formulario
+        // Validar selección de fila
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione una cuota para cobrar.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Obtener los datos de la cuota seleccionada
+        // Obtener datos de la cuota seleccionada
         String cuota = jTable1.getValueAt(selectedRow, 0).toString();
         String fecha = jTable1.getValueAt(selectedRow, 1).toString();
         String monto = jTable1.getValueAt(selectedRow, 2).toString();
@@ -295,47 +294,49 @@ public class MovimientoCobros extends javax.swing.JFrame {
         String idCliente = txtIdCteCobro.getText().trim();
         File archivoCuotas = new File("Cuota_Prestamo.txt");
         File archivoCuotasTemp = new File("Cuota_Prestamo_Temp.txt");
+        File archivoCobro = new File("Cobro_Prestamo.txt");
+
+        boolean cobroRealizado = false;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(archivoCuotas)); BufferedWriter writer = new BufferedWriter(new FileWriter(archivoCuotasTemp))) {
 
             String line;
-            boolean cobroRealizado = false;
+            String lineaCobro = null;
 
             while ((line = reader.readLine()) != null) {
                 String[] atributos = line.split(",");
-                if (atributos[1].equals(idCliente) && atributos[3].equals(cuota) && atributos[7].equals("false")) { // Buscar cuota pendiente
+                if (atributos[1].equals(idCliente) && atributos[3].equals(cuota) && atributos[7].equals("false")) {
                     // Marcar la cuota como cobrada
                     atributos[7] = "true";
                     cobroRealizado = true;
-
-                    // Actualizar archivo de cobros
-                    File archivoCobro = new File("Cobro_Prestamo.txt");
-                    try (BufferedWriter cobroWriter = new BufferedWriter(new FileWriter(archivoCobro, true))) {
-                        String lineaCobro = txtIdCobro.getText().trim() + ","
-                                + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ","
-                                + idCliente + ","
-                                + cuota + ","
-                                + valorCobro + ","
-                                + txtConceptoCobro.getText().trim() + ","
-                                + "true";
-
-                        cobroWriter.write(lineaCobro);
-                        cobroWriter.newLine();
-                    }
+                    // Preparar la línea de cobro para registrar
+                    lineaCobro = txtIdCobro.getText().trim() + ","
+                            + new SimpleDateFormat("dd/MM/yyyy").format(new Date()) + ","
+                            + idCliente + ","
+                            + cuota + ","
+                            + valorCobro + ","
+                            + txtConceptoCobro.getText().trim() + ","
+                            + "true";
                 }
-
                 // Escribir la línea actualizada en el archivo temporal
                 writer.write(String.join(",", atributos));
                 writer.newLine();
             }
 
-            if (!cobroRealizado) {
+            if (cobroRealizado) {
+                // Escribir el cobro en el archivo una sola vez si se realizó el cobro
+                try (BufferedWriter cobroWriter = new BufferedWriter(new FileWriter(archivoCobro, true))) {
+                    cobroWriter.write(lineaCobro);
+                    cobroWriter.newLine();
+                }
+            } else {
                 JOptionPane.showMessageDialog(this, "No se pudo realizar el cobro. Verifique los datos y vuelva a intentarlo.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al procesar el cobro.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
+            return;
         }
 
         // Reemplazar el archivo original por el archivo temporal
@@ -346,7 +347,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al actualizar el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        // Restar el monto cobrado del balance en Prestamo.txt
+        // Actualizar el balance en Prestamo.txt
         actualizarBalancePrestamo(idCliente, valor);
 
         // Generar PDF con detalles del cobro
@@ -357,9 +358,9 @@ public class MovimientoCobros extends javax.swing.JFrame {
             e.printStackTrace();
         }
 
-        // Limpiar campos y actualizar tabla después del cobro
+        // Limpiar campos y actualizar tabla
         limpiarCampos();
-        // buscarCuotasPorCliente();
+        // buscarCuotasPorCliente(); // Asegúrate de implementar este método si es necesario
     }//GEN-LAST:event_btnCobrarActionPerformed
     private void actualizarBalancePrestamo(String idCliente, double montoCobrado) {
         File archivoPrestamos = new File("prestamos.txt");

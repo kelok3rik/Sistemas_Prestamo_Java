@@ -5,14 +5,12 @@
 package prestamo.consultas;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.table.DefaultTableModel;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,17 +19,17 @@ import java.util.Date;
  *
  * @author erikr
  */
-public class ConsultPrestamosPorFechasVencimiento extends javax.swing.JFrame {
+public class ConsultaCobroPorVencido extends javax.swing.JFrame {
 
     private DefaultTableModel tableModel;
 
     /**
-     * Creates new form ConsultPrestamosPorFechasVencimiento
+     * Creates new form ConsultaCobroPorVencido
      */
-    public ConsultPrestamosPorFechasVencimiento() {
+    public ConsultaCobroPorVencido() {
         initComponents();
         initializeTableModel();
-        cargarPrestamos();
+        cargarCuotas();
     }
 
     /**
@@ -43,36 +41,16 @@ public class ConsultPrestamosPorFechasVencimiento extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnBuscar = new javax.swing.JButton();
+        txtFechaInicio = new javax.swing.JTextField();
+        txtFechaFin = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
-        txtFechaInicio = new javax.swing.JTextField();
-        txtFechaFin = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jLabel2.setText("FECHA INICIO:");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "ID PRESTAMO", "ID CLIENTE", "ID FIADOR", "ESTADO", "EMISION", "CUOTAS", "FINAL", "GARANTIA", "MONTO", "BALANCE", "TASA", "CUOTA FIJA"
-            }
-        ));
-        jTable1.setEnabled(false);
-        jScrollPane1.setViewportView(jTable1);
-
-        jLabel1.setText("CONSULTA PRESTAMOS POR FECHA");
-
-        jLabel3.setText("FECHA FIN:");
 
         btnBuscar.setText("BUSCAR");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -80,6 +58,26 @@ public class ConsultPrestamosPorFechasVencimiento extends javax.swing.JFrame {
                 btnBuscarActionPerformed(evt);
             }
         });
+
+        jLabel2.setText("FECHA INICIO:");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID COBRO", "FECHA", "ID CLIENTE", "VALOR", "CONCEPTO"
+            }
+        ));
+        jTable1.setEnabled(false);
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel1.setText("CONSULTA COBRO POR VENCIDO");
+
+        jLabel3.setText("FECHA FIN:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -102,16 +100,16 @@ public class ConsultPrestamosPorFechasVencimiento extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 367, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(366, 366, 366))
+                .addGap(151, 151, 151))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel3)
@@ -120,109 +118,90 @@ public class ConsultPrestamosPorFechasVencimiento extends javax.swing.JFrame {
                     .addComponent(btnBuscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-        String fechaInicio = txtFechaInicio.getText().trim();
-        String fechaFin = txtFechaFin.getText().trim();
-
-        if (fechaInicio.isEmpty() || fechaFin.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingresa ambas fechas.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        filtrarPrestamosPorFecha(fechaInicio, fechaFin);
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void initializeTableModel() {
         tableModel = new DefaultTableModel(new Object[]{
-            "ID Préstamo", "ID Cliente", "ID Fiador", "Estado", "Fecha Inicio", "Plazo", "Fecha Final", "Tipo Garantía", "Monto", "Balance", "Tasa", "Cuota Fija"
+            "Num Cuota", "Id Cuota Préstamo Cte", "Fecha Cuota", "Valor Cuota", "Valor Amortización", "Valor Interés", "Status Cuota"
         }, 0);
         jTable1.setModel(tableModel);
     }
 
-    private void cargarPrestamos() {
-        try (BufferedReader br = new BufferedReader(new FileReader("prestamos.txt"))) {
+    private void cargarCuotas() {
+        try (BufferedReader br = new BufferedReader(new FileReader("Cuota_Prestamo.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] partes = linea.split(",");
-                if (partes.length == 12) {
+                if (partes.length == 7) {
                     tableModel.addRow(new Object[]{
-                        partes[0], // ID Préstamo
-                        partes[1], // ID Cliente
-                        partes[2], // ID Fiador
-                        partes[3], // Estado
-                        partes[4], // Fecha Inicio
-                        partes[5], // Plazo
-                        partes[6], // Fecha Final
-                        partes[7], // Tipo Garantía
-                        Double.parseDouble(partes[8]), // Monto
-                        Double.parseDouble(partes[9]), // Balance
-                        Double.parseDouble(partes[10]), // Tasa
-                        Double.parseDouble(partes[11]) // Cuota Fija
+                        partes[0], // Num Cuota
+                        partes[1], // Id Cuota Préstamo Cte
+                        partes[2], // Fecha Cuota
+                        Double.parseDouble(partes[3]), // Valor Cuota
+                        Double.parseDouble(partes[4]), // Valor Amortización
+                        Double.parseDouble(partes[5]), // Valor Interés
+                        partes[6] // Status Cuota
                     });
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo de préstamos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void filtrarPrestamosPorFecha(String fechaInicio, String fechaFin) {
+    private void filtrarCuotasVencidas() {
         tableModel.setRowCount(0);
+        Date fechaActual = new Date(); // Obtener la fecha actual del sistema
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
-        try (BufferedReader br = new BufferedReader(new FileReader("prestamos.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("Cuota_Prestamo.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 String[] partes = linea.split(",");
-                if (partes.length == 12) {
-                    String fechaPrestamo = partes[6]; // Fecha Inicio Préstamo
+                if (partes.length == 7) {
+                    String fechaCuota = partes[2]; // Fecha Cuota
+                    String statusCuota = partes[6]; // Status Cuota
 
-                    if (esFechaEnRango(fechaPrestamo, fechaInicio, fechaFin)) {
+                    if (esFechaVencida(fechaCuota, fechaActual) && statusCuota.equals("Vencida")) {
                         tableModel.addRow(new Object[]{
-                            partes[0], // ID Préstamo
-                            partes[1], // ID Cliente
-                            partes[2], // ID Fiador
-                            partes[3], // Estado
-                            partes[4], // Fecha Inicio
-                            partes[5], // Plazo
-                            partes[6], // Fecha Final
-                            partes[7], // Tipo Garantía
-                            Double.parseDouble(partes[8]), // Monto
-                            Double.parseDouble(partes[9]), // Balance
-                            Double.parseDouble(partes[10]), // Tasa
-                            Double.parseDouble(partes[11]) // Cuota Fija
+                            partes[0], // Num Cuota
+                            partes[1], // Id Cuota Préstamo Cte
+                            partes[2], // Fecha Cuota
+                            Double.parseDouble(partes[3]), // Valor Cuota
+                            Double.parseDouble(partes[4]), // Valor Amortización
+                            Double.parseDouble(partes[5]), // Valor Interés
+                            partes[6] // Status Cuota
                         });
                     }
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo de préstamos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private boolean esFechaEnRango(String fecha, String fechaInicio, String fechaFin) {
+    private boolean esFechaVencida(String fechaCuota, Date fechaActual) {
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
         try {
-            // Convertir las cadenas a objetos Date
-            Date fechaPrestamo = formato.parse(fecha);
-            Date fechaInicioDate = formato.parse(fechaInicio);
-            Date fechaFinDate = formato.parse(fechaFin);
-
+            Date fechaCuotaDate = formato.parse(fechaCuota);
             // Comparar las fechas
-            return fechaPrestamo.compareTo(fechaInicioDate) >= 0 && fechaPrestamo.compareTo(fechaFinDate) <= 0;
+            return fechaCuotaDate.before(fechaActual) || fechaCuotaDate.equals(fechaActual);
 
         } catch (ParseException e) {
-            JOptionPane.showMessageDialog(this, "Error en el formato de las fechas: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error en el formato de la fecha: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        filtrarCuotasVencidas();
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -241,20 +220,20 @@ public class ConsultPrestamosPorFechasVencimiento extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConsultPrestamosPorFechasVencimiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaCobroPorVencido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConsultPrestamosPorFechasVencimiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaCobroPorVencido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConsultPrestamosPorFechasVencimiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaCobroPorVencido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConsultPrestamosPorFechasVencimiento.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaCobroPorVencido.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ConsultPrestamosPorFechasVencimiento().setVisible(true);
+                new ConsultaCobroPorVencido().setVisible(true);
             }
         });
     }

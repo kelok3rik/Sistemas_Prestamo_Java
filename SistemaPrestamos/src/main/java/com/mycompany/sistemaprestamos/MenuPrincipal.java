@@ -7,6 +7,9 @@ package com.mycompany.sistemaprestamos;
 import prestamo.consultas.ConsultPrestamos;
 import prestamo.consultas.ConsultPrestamosPorFechas;
 import prestamo.consultas.ConsultPrestamosPorFechasVencimiento;
+import prestamo.consultas.ConsultPrestamosSaldosPendientes;
+import prestamo.consultas.ConsultaCobroPorFecha;
+import prestamo.consultas.ConsultaCobroPorVencido;
 import prestamo.mantenimiento.MantenimientoUsuarios;
 import prestamo.mantenimiento.MantenimientoGarantias;
 import prestamo.mantenimiento.MantenimientoClientes;
@@ -217,12 +220,27 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenu4.add(jMenuItem16);
 
         jMenuItem17.setText("De prestamos con saldos pendientes");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem17);
 
         jMenuItem18.setText("De cobro por fecha");
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem18);
 
         jMenuItem1.setText("De cobro por vencido");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem1);
 
         jMenuBar1.add(jMenu4);
@@ -343,6 +361,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
         ConsultPrestamosPorFechasVencimiento cstppfv = new ConsultPrestamosPorFechasVencimiento();
         cstppfv.setVisible(true);
     }//GEN-LAST:event_jMenuItem16ActionPerformed
+
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        // TODO add your handling code here:
+       ConsultPrestamosSaldosPendientes cstpsp = new ConsultPrestamosSaldosPendientes();
+       cstpsp.setVisible(true);
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+        // TODO add your handling code here:
+        ConsultaCobroPorFecha ccpf = new ConsultaCobroPorFecha();
+        ccpf.setVisible(true);
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        ConsultaCobroPorVencido ccpv = new ConsultaCobroPorVencido();
+        ccpv.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
