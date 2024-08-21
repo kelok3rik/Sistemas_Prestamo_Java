@@ -58,6 +58,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     public MantenimientoPrestamos() {
         initComponents();
         setFechaInicioActual();
+
     }
 
     /**
@@ -98,9 +99,13 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         txtPlazoPrestamo = new javax.swing.JSpinner();
         jLabel15 = new javax.swing.JLabel();
+        txtNombreFiador = new javax.swing.JTextField();
+        txtNombreCliente1 = new javax.swing.JTextField();
+        txtTipoGarantia1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Mantenimiento Prestamos");
 
         jLabel2.setText("ID PRESTAMO");
@@ -157,6 +162,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
         txtFechaFinal.setEditable(false);
 
+        txtTipoGarantia.setEditable(false);
         txtTipoGarantia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTipoGarantiaActionPerformed(evt);
@@ -194,10 +200,13 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             }
         });
 
+        jCheckBox1.setSelected(true);
         jCheckBox1.setText("Activo");
 
         jLabel14.setText("Meses");
 
+        txtPlazoPrestamo.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        txtPlazoPrestamo.setEditor(new javax.swing.JSpinner.NumberEditor(txtPlazoPrestamo, ""));
         txtPlazoPrestamo.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 txtPlazoPrestamoStateChanged(evt);
@@ -206,94 +215,113 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
         jLabel15.setText("%");
 
+        txtNombreFiador.setEditable(false);
+
+        txtNombreCliente1.setEditable(false);
+
+        txtTipoGarantia1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTipoGarantia1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(135, 135, 135)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
                             .addComponent(jLabel6)
                             .addComponent(jLabel5))
-                        .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtFechaInicio, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
                                 .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addGap(81, 81, 81)
-                                .addComponent(txtTasaFija))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel11)
-                                    .addComponent(jLabel12))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtBalancePrestamo)
-                                    .addComponent(txtFechaFinal, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtTipoGarantia)
-                                    .addComponent(txtMontoPrestamo, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel15))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(txtPlazoPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel14)))
-                                        .addGap(0, 12, Short.MAX_VALUE))))))
+                                .addComponent(txtFechaInicio))))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel13)
+                        .addGap(81, 81, 81)
+                        .addComponent(txtTasaFija))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtBalancePrestamo)
+                            .addComponent(txtFechaFinal, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtMontoPrestamo, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtTasaPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel15))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtPlazoPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel14)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtTipoGarantia1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTipoGarantia))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2))
-                        .addGap(62, 62, 62)
+                        .addGap(68, 68, 68)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIDPrestamo)
-                            .addComponent(txtIDCliente)
-                            .addComponent(txtIDFiador))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtIDFiador, javax.swing.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE)
+                                    .addComponent(txtIDCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNombreFiador)
+                                    .addComponent(txtNombreCliente1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addComponent(txtIDPrestamo))))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 187, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(176, 176, 176))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(12, 12, 12)
                 .addComponent(jLabel1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtIDPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtIDCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIDCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreCliente1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtIDFiador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIDFiador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombreFiador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -312,9 +340,11 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(txtFechaFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
-                    .addComponent(txtTipoGarantia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtTipoGarantia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtTipoGarantia1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -336,14 +366,30 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void initialComponents() {
+        txtPlazoPrestamo = new javax.swing.JSpinner(new javax.swing.SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+
+        // Configurar el editor para que el campo de texto no sea editable
+        JSpinner.NumberEditor editor = (JSpinner.NumberEditor) txtPlazoPrestamo.getEditor();
+        JFormattedTextField textField = editor.getTextField();
+        textField.setEditable(false);
+
+        // Agregar el JSpinner al formulario
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.FlowLayout());
+        getContentPane().add(txtPlazoPrestamo);
+
+        pack();
+    }
+
     private void txtIDPrestamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDPrestamoActionPerformed
-        // TODO add your handling code here:
+        // Obtener el ID del préstamo desde el campo de texto
         // Obtener el ID del préstamo desde el campo de texto
         String idPrestamo = txtIDPrestamo.getText().trim();
         boolean existePrestamo = false; // Variable para verificar existencia de préstamo
@@ -353,28 +399,102 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] atributos = line.split(",");
-                if (atributos.length >= 4 && atributos[0].equals(idPrestamo)) {
+                if (atributos.length >= 12 && atributos[0].trim().equals(idPrestamo)) { // Verifica el ID del préstamo
                     existePrestamo = true;
 
                     // Verificar si el estado del préstamo es false
                     if (atributos[3].trim().equals("false")) {
                         // Mostrar mensaje de modificación y cargar atributos
-                        JOptionPane.showMessageDialog(this, "Modificando");
+                        JOptionPane.showMessageDialog(this, "Modificando el préstamo con ID: " + idPrestamo);
 
                         // Cargar los atributos en los campos de la ventana
-                        txtIDCliente.setText(atributos[1].trim()); // Asumiendo que Id_Cte_Prestamo está en el índice 1
-                        txtIDFiador.setText(atributos[2].trim());  // Asumiendo que Id_Fiador_Prestamo está en el índice 2
-                        txtFechaInicio.setText(atributos[4].trim()); // Asumiendo que Fecha_Inicio está en el índice 4
-                        txtPlazoPrestamo.setValue(Integer.parseInt(atributos[5].trim())); // Asumiendo que Plazo está en el índice 5
-                        txtFechaFinal.setText(atributos[6].trim()); // Asumiendo que Fecha_Final está en el índice 6
-                        txtTipoGarantia.setText(atributos[7].trim()); // Asumiendo que Tipo_Garantia está en el índice 7
-                        txtMontoPrestamo.setText(atributos[8].trim()); // Asumiendo que Monto está en el índice 8
-                        txtBalancePrestamo.setText(atributos[9].trim()); // Asumiendo que Balance está en el índice 9
-                        txtTasaPrestamo.setText(atributos[10].trim()); // Asumiendo que Tasa está en el índice 10
-                        txtTasaFija.setText(atributos[11].trim()); // Asumiendo que Tasa_Fija está en el índice 11
+                        txtIDCliente.setText(atributos[1].trim()); // ID Cliente
+                        txtIDFiador.setText(atributos[2].trim());  // ID Fiador
+                        txtFechaInicio.setText(atributos[4].trim()); // Fecha de Inicio
+                        txtPlazoPrestamo.setValue(Integer.parseInt(atributos[5].trim())); // Plazo
+                        txtFechaFinal.setText(atributos[6].trim()); // Fecha Final
+                        String tipoGarantia = atributos[7].trim(); // Tipo de Garantía
+                        txtMontoPrestamo.setText(atributos[8].trim()); // Monto
+                        txtBalancePrestamo.setText(atributos[9].trim()); // Balance
+                        txtTasaPrestamo.setText(atributos[10].trim()); // Tasa
+                        txtTasaFija.setText(atributos[11].trim()); // Tasa Fija
+
+                        // Buscar y mostrar el nombre del cliente
+                        String idCliente = atributos[1].trim();
+                        String nombreCliente = null;
+                        try (BufferedReader br = new BufferedReader(new FileReader("clientes.txt"))) {
+                            String clienteLine;
+                            while ((clienteLine = br.readLine()) != null) {
+                                String[] clienteParts = clienteLine.split(",");
+                                if (clienteParts.length >= 4 && clienteParts[0].trim().equals(idCliente)) {
+                                    // Concatenar nombre y apellidos con espacios
+                                    nombreCliente = clienteParts[1].trim() + " " + clienteParts[2].trim() + " " + clienteParts[3].trim();
+                                    break;
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (nombreCliente != null) {
+                            txtNombreCliente1.setText(nombreCliente);
+                        } else {
+                            txtNombreCliente1.setText("Cliente no encontrado");
+                        }
+
+                        // Buscar y mostrar el nombre del fiador
+                        String idFiador = atributos[2].trim();
+                        String nombreFiador = null;
+                        try (BufferedReader br = new BufferedReader(new FileReader("fiadores.txt"))) {
+                            String fiadorLine;
+                            while ((fiadorLine = br.readLine()) != null) {
+                                String[] fiadorParts = fiadorLine.split(";");
+                                if (fiadorParts.length >= 4 && fiadorParts[0].trim().equals(idFiador)) {
+                                    // Concatenar nombre y apellidos con espacios
+                                    nombreFiador = fiadorParts[1].trim() + " " + fiadorParts[2].trim() + " " + fiadorParts[3].trim();
+                                    break;
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (nombreFiador != null) {
+                            txtNombreFiador.setText(nombreFiador);
+                        } else {
+                            txtNombreFiador.setText("Fiador no encontrado");
+                        }
+
+                        // Buscar y mostrar el ID de la garantía
+                        String idTipoGarantia = tipoGarantia;
+                        String nombreTipoGarantia = null;
+                        try (BufferedReader br = new BufferedReader(new FileReader("garantias.txt"))) {
+                            String garantiaLine;
+                            while ((garantiaLine = br.readLine()) != null) {
+                                String[] garantiaParts = garantiaLine.split(";");
+                                if (garantiaParts.length >= 2 && garantiaParts[1].trim().equals(tipoGarantia)) {
+                                    idTipoGarantia = garantiaParts[0].trim();
+                                    nombreTipoGarantia = garantiaParts[1].trim();
+                                    break;
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (nombreTipoGarantia != null) {
+                            txtTipoGarantia1.setText(idTipoGarantia); // Mostrar ID de la garantía
+                            txtTipoGarantia.setText(nombreTipoGarantia);
+                        } else {
+                            txtTipoGarantia1.setText("Garantía no encontrada");
+                        }
+
                     } else {
                         // Mensaje si el préstamo no se puede modificar
-                        JOptionPane.showMessageDialog(this, "El préstamo está activo y no se puede modificar.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this,
+                                "El préstamo con ID '" + idPrestamo + "' está activo y no se puede modificar.",
+                                "Error de Modificación",
+                                JOptionPane.ERROR_MESSAGE);
                     }
 
                     break;
@@ -383,12 +503,18 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
             // Si no se encontró el préstamo
             if (!existePrestamo) {
-                JOptionPane.showMessageDialog(this, "Creando");
+                JOptionPane.showMessageDialog(this,
+                        "El préstamo con ID '" + idPrestamo + "' no existe. Puede crear un nuevo préstamo.",
+                        "Creación de Préstamo",
+                        JOptionPane.INFORMATION_MESSAGE);
                 // Aquí puedes habilitar los campos para permitir la digitación de nuevos atributos
             }
 
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo de préstamos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al leer el archivo de préstamos. Verifique el archivo 'Prestamos.txt'.",
+                    "Error de Archivo",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_txtIDPrestamoActionPerformed
@@ -409,8 +535,9 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(","); // Ajusta el delimitador según tu archivo
-                if (parts[0].trim().equals(idCliente)) {
-                    nombreCliente = parts[1].trim();
+                if (parts.length >= 4 && parts[0].trim().equals(idCliente)) {
+                    // Concatenar nombre y apellidos con espacios
+                    nombreCliente = parts[1].trim() + " " + parts[2].trim() + " " + parts[3].trim();
                     break;
                 }
             }
@@ -428,6 +555,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                     "El ID Cliente '" + idCliente + "' corresponde al cliente: " + nombreCliente,
                     "Cliente Encontrado",
                     JOptionPane.INFORMATION_MESSAGE);
+            txtNombreCliente1.setText(nombreCliente);
         }
 
     }//GEN-LAST:event_txtIDClienteActionPerformed
@@ -438,7 +566,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPlazoPrestamoStateChanged
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        // Verificar la validez de los campos antes de proceder
         if (validarCampos()) {
             // Recopilar datos del préstamo
             String idPrestamo = txtIDPrestamo.getText().trim();
@@ -496,6 +624,29 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Error al guardar el préstamo.", "Error", JOptionPane.ERROR_MESSAGE);
                 return; // Salir del método en caso de error
+            }
+
+            // Buscar y mostrar el nombre de la garantía
+            String nombreTipoGarantia = null;
+            try (BufferedReader br = new BufferedReader(new FileReader("garantias.txt"))) {
+                String garantiaLine;
+                while ((garantiaLine = br.readLine()) != null) {
+                    String[] garantiaParts = garantiaLine.split(";");
+                    if (garantiaParts.length >= 2 && garantiaParts[0].trim().equals(tipoGarantia)) {
+                        nombreTipoGarantia = garantiaParts[1].trim();
+                        break;
+                    }
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al leer el archivo de garantías.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            if (nombreTipoGarantia != null) {
+                txtTipoGarantia.setText(nombreTipoGarantia); // Mostrar nombre de la garantía
+                txtTipoGarantia1.setText(tipoGarantia); // Mostrar ID de la garantía
+            } else {
+                txtTipoGarantia.setText("Garantía no encontrada");
+                txtTipoGarantia1.setText("ID no encontrado");
             }
 
             // Crear cuotas del préstamo y almacenarlas en el archivo Cuota_Prestamo.txt
@@ -601,9 +752,8 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Error al generar las cuotas del préstamo.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos obligatorios y asegúrese de que los valores sean válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void createPDF(String idPrestamo) {
@@ -756,8 +906,9 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(";"); // Ajusta el delimitador según tu archivo
-                if (parts[0].trim().equals(idFiador)) {
-                    nombreFiador = parts[1].trim();
+                if (parts.length >= 4 && parts[0].trim().equals(idFiador)) {
+                    // Concatenar nombre y apellidos con espacios
+                    nombreFiador = parts[1].trim() + " " + parts[2].trim() + " " + parts[3].trim();
                     break;
                 }
             }
@@ -775,45 +926,13 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                     "El ID Fiador '" + idFiador + "' corresponde al fiador: " + nombreFiador,
                     "Fiador Encontrado",
                     JOptionPane.INFORMATION_MESSAGE);
+            txtNombreFiador.setText(nombreFiador);
         }
     }//GEN-LAST:event_txtIDFiadorActionPerformed
 
     private void txtTipoGarantiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTipoGarantiaActionPerformed
         // TODO add your handling code here:
-        String tipoGarantia = txtTipoGarantia.getText().trim();
-        if (tipoGarantia.isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                    "El campo Tipo Garantía no puede estar vacío.",
-                    "Campo Vacío",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
 
-        String nombreTipoGarantia = null;
-        try (BufferedReader br = new BufferedReader(new FileReader("garantias.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";"); // Ajusta el delimitador según tu archivo
-                if (parts.length > 1 && parts[1].trim().equals(tipoGarantia)) {
-                    nombreTipoGarantia = parts[0].trim();
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (nombreTipoGarantia == null) {
-            JOptionPane.showMessageDialog(null,
-                    "El Tipo Garantía '" + tipoGarantia + "' no existe.",
-                    "Error de Validación",
-                    JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null,
-                    "El Tipo Garantía '" + tipoGarantia + "' corresponde a: " + nombreTipoGarantia,
-                    "Tipo Garantía Encontrado",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
     }//GEN-LAST:event_txtTipoGarantiaActionPerformed
 
     private void txtMontoPrestamoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoPrestamoKeyPressed
@@ -836,6 +955,57 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_txtTasaPrestamoKeyReleased
+
+    private void txtTipoGarantia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTipoGarantia1ActionPerformed
+        // TODO add your handling code here:
+        // Obtener el tipo de garantía desde el campo de texto (se espera que sea el ID)
+        String tipoGarantiaID = txtTipoGarantia1.getText().trim();
+
+        // Verificar si el campo está vacío
+        if (tipoGarantiaID.isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                    "El campo Tipo Garantía no puede estar vacío.",
+                    "Campo Vacío",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Variables para almacenar los datos encontrados
+        String nombreTipoGarantia = null;
+
+        // Leer el archivo de garantías
+        try (BufferedReader br = new BufferedReader(new FileReader("garantias.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(";"); // Usar el delimitador ';'
+                if (parts.length > 1 && parts[0].trim().equals(tipoGarantiaID)) {
+                    // Encontrar el nombre del tipo de garantía
+                    nombreTipoGarantia = parts[1].trim();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Verificar si se encontró el tipo de garantía
+        if (nombreTipoGarantia == null) {
+            JOptionPane.showMessageDialog(null,
+                    "El ID Tipo Garantía '" + tipoGarantiaID + "' no existe.",
+                    "Error de Validación",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "El ID Tipo Garantía '" + tipoGarantiaID + "' corresponde a: " + nombreTipoGarantia,
+                    "Tipo Garantía Encontrado",
+                    JOptionPane.INFORMATION_MESSAGE);
+            txtTipoGarantia.setText("");
+
+            // Actualizar el campo de texto con el nombre del tipo de garantía
+            txtTipoGarantia.setText(nombreTipoGarantia);
+        }
+
+    }//GEN-LAST:event_txtTipoGarantia1ActionPerformed
 
     private void calcularCuotaFija() {
         try {
@@ -926,17 +1096,73 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     }
 
     private boolean validarCampos() {
-        // Verificar si los campos obligatorios están llenos
-        return !txtIDPrestamo.getText().trim().isEmpty()
+        // Verificar que los campos obligatorios no estén vacíos
+        boolean camposLlenos = !txtIDPrestamo.getText().trim().isEmpty()
                 && !txtIDCliente.getText().trim().isEmpty()
                 && !txtFechaInicio.getText().trim().isEmpty()
-                && !txtPlazoPrestamo.getValue().toString().trim().isEmpty()
                 && !txtFechaFinal.getText().trim().isEmpty()
                 && !txtTipoGarantia.getText().trim().isEmpty()
                 && !txtMontoPrestamo.getText().trim().isEmpty()
                 && !txtBalancePrestamo.getText().trim().isEmpty()
                 && !txtTasaPrestamo.getText().trim().isEmpty()
                 && !txtTasaFija.getText().trim().isEmpty();
+
+        if (!camposLlenos) {
+            return false;
+        }
+
+        // Validar que el plazo del préstamo sea un número mayor a 0
+        int plazoPrestamo = ((Number) txtPlazoPrestamo.getValue()).intValue();
+        if (plazoPrestamo <= 0) {
+            return false;
+        }
+
+        // Validar que la tasa fija sea un número mayor a 0
+        double tasaFija;
+        try {
+            tasaFija = Double.parseDouble(txtTasaFija.getText().trim());
+            if (tasaFija <= 0) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        // Validar que el monto del préstamo sea un número positivo
+        double montoPrestamo;
+        try {
+            montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText().trim());
+            if (montoPrestamo <= 0) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        // Validar que la fecha final sea posterior a la fecha de inicio
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            Date fechaInicio = formatoFecha.parse(txtFechaInicio.getText().trim());
+            Date fechaFinal = formatoFecha.parse(txtFechaFinal.getText().trim());
+            if (fechaFinal.before(fechaInicio)) {
+                return false;
+            }
+        } catch (ParseException e) {
+            return false;
+        }
+
+        // Validar que el balance del préstamo sea un número positivo
+        double balancePrestamo;
+        try {
+            balancePrestamo = Double.parseDouble(txtBalancePrestamo.getText().trim());
+            if (balancePrestamo < 0) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -1000,9 +1226,12 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     private javax.swing.JTextField txtIDFiador;
     private javax.swing.JTextField txtIDPrestamo;
     private javax.swing.JTextField txtMontoPrestamo;
+    private javax.swing.JTextField txtNombreCliente1;
+    private javax.swing.JTextField txtNombreFiador;
     private javax.swing.JSpinner txtPlazoPrestamo;
     private javax.swing.JTextField txtTasaFija;
     private javax.swing.JTextField txtTasaPrestamo;
     private javax.swing.JTextField txtTipoGarantia;
+    private javax.swing.JTextField txtTipoGarantia1;
     // End of variables declaration//GEN-END:variables
 }

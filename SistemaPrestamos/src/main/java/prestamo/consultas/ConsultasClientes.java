@@ -4,17 +4,29 @@
  */
 package prestamo.consultas;
 
+import javax.swing.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author erikr
  */
 public class ConsultasClientes extends javax.swing.JFrame {
 
+    private DefaultTableModel tableModel;
+
     /**
      * Creates new form ConsultasClientes
      */
     public ConsultasClientes() {
         initComponents();
+        initializeTableModel();
+        cargarClientes();
     }
 
     /**
@@ -26,21 +38,145 @@ public class ConsultasClientes extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        txtBuscarID = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "NOMBRE", "DIRECCION", "CEDULA", "TELEFONO", "EMPRESA", "OCUPACION", "SUELDO", "SEXO"
+            }
+        ));
+        jTable1.setEnabled(false);
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel1.setText("CONSULTA CLIENTES");
+
+        txtBuscarID.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarIDKeyReleased(evt);
+            }
+        });
+
+        jLabel2.setText("BUSCAR:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(193, 193, 193))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtBuscarID))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 842, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscarID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+   
+
+    private void initializeTableModel() {
+        tableModel = new DefaultTableModel(new Object[]{"ID", "Nombre Completo", "Dirección", "Cédula", "Teléfono", "Empresa", "Ocupación", "Sueldo", "Sexo"}, 0);
+        jTable1.setModel(tableModel);
+    }
+
+    private void cargarClientes() {
+        try (BufferedReader br = new BufferedReader(new FileReader("clientes.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                 System.out.println("Leyendo línea: " + linea); // Verifica la línea leída
+                String[] partes = linea.split(",");
+                if (partes.length == 12) {
+                    String nombreCompleto = partes[1] + " " + partes[2]; // Ajuste si el nombre está en otras posiciones
+                    tableModel.addRow(new Object[]{
+                        partes[0], // ID
+                        nombreCompleto, // Nombre Completo
+                        partes[3], // Dirección
+                        partes[4], // Cédula
+                        partes[5], // Teléfono
+                        partes[6], // Empresa
+                        partes[7], // Ocupación
+                        partes[8], // Sueldo
+                        partes[9]  // Sexo
+                    });
+                } else{
+                    System.out.println("Formato incorrecto: " + linea); // Depuración: formato incorrecto
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de clientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void filtrarClientes(String searchText) {
+        tableModel.setRowCount(0);
+
+        try (BufferedReader br = new BufferedReader(new FileReader("clientes.txt"))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length == 12) {
+                    String nombreCompleto = partes[1] + " " + partes[2]; // Ajuste si el nombre está en otras posiciones
+                    if (searchText.isEmpty() || partes[0].contains(searchText) || nombreCompleto.toLowerCase().contains(searchText.toLowerCase())) {
+                        tableModel.addRow(new Object[]{
+                            partes[0], // ID
+                            nombreCompleto, // Nombre Completo
+                            partes[3], // Dirección
+                            partes[4], // Cédula
+                            partes[5], // Teléfono
+                            partes[6], // Empresa
+                            partes[7], // Ocupación
+                            partes[8], // Sueldo
+                            partes[9]  // Sexo
+                        });
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de clientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+         
+
+    private void txtBuscarIDKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarIDKeyReleased
+        // TODO add your handling code here:
+        String idGarantia = txtBuscarID.getText().trim();
+        filtrarClientes(idGarantia); // Call the filter method with the entered ID
+    }//GEN-LAST:event_txtBuscarIDKeyReleased
 
     /**
      * @param args the command line arguments
@@ -78,5 +214,10 @@ public class ConsultasClientes extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField txtBuscarID;
     // End of variables declaration//GEN-END:variables
 }

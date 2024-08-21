@@ -23,22 +23,22 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="379" max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" pref="175" max="-2" attributes="0"/>
+              <EmptySpace pref="471" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
+                  <Component id="jScrollPane1" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtBuscarID" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane1" alignment="0" min="-2" pref="842" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="177" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="379" max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" pref="175" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -47,7 +47,7 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="36" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="txtBuscarID" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -79,16 +79,19 @@
         <Component class="javax.swing.JTable" name="jTable1">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="9" rowCount="4">
-                <Column editable="true" title="ID" type="java.lang.Object"/>
-                <Column editable="true" title="NOMBRE" type="java.lang.Object"/>
-                <Column editable="true" title="DIRECCION" type="java.lang.Object"/>
-                <Column editable="true" title="CEDULA" type="java.lang.Object"/>
-                <Column editable="true" title="TELEFONO" type="java.lang.Object"/>
-                <Column editable="true" title="EMPRESA" type="java.lang.Object"/>
-                <Column editable="true" title="OCUPACION" type="java.lang.Object"/>
-                <Column editable="true" title="SUELDO" type="java.lang.Object"/>
-                <Column editable="true" title="SEXO" type="java.lang.Object"/>
+              <Table columnCount="12" rowCount="4">
+                <Column editable="true" title="ID PRESTAMO" type="java.lang.Object"/>
+                <Column editable="true" title="ID CLIENTE" type="java.lang.Object"/>
+                <Column editable="true" title="ID FIADOR" type="java.lang.Object"/>
+                <Column editable="true" title="ESTADO" type="java.lang.Object"/>
+                <Column editable="true" title="EMISION" type="java.lang.Object"/>
+                <Column editable="true" title="CUOTAS" type="java.lang.Object"/>
+                <Column editable="true" title="FINAL" type="java.lang.Object"/>
+                <Column editable="true" title="GARANTIA" type="java.lang.Object"/>
+                <Column editable="true" title="MONTO" type="java.lang.Object"/>
+                <Column editable="true" title="BALANCE" type="java.lang.Object"/>
+                <Column editable="true" title="TASA" type="java.lang.Object"/>
+                <Column editable="true" title="CUOTA FIJA" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="enabled" type="boolean" value="false"/>
@@ -98,7 +101,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="CONSULTA FIADORES"/>
+        <Property name="text" type="java.lang.String" value="CONSULTA PRESTAMOS"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -185,10 +185,11 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
         // TODO add your handling code here:
         String login = txtLogin.getText();
         String password = txtPassword.getText();
+        String nivelAcceso = (String) cbNivelAcceso.getSelectedItem();
         String nombre = txtNombre.getText();
         String apellidos = txtApellidos.getText();
         String email = txtEmail.getText();
-        String nivelAcceso = (String) cbNivelAcceso.getSelectedItem();
+        
 
         // Validación de entradas
         if (login.isEmpty() || password.isEmpty() || nombre.isEmpty() || apellidos.isEmpty() || email.isEmpty()) {
@@ -217,7 +218,7 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
                 String[] data = line.split(",");
                 if (data[0].equals(login)) {
                     // Modificar usuario existente
-                    writer.write(login + "," + password + "," + nombre + "," + apellidos + "," + email + "," + nivelAcceso);
+                    writer.write(login + "," + password + "," + nivelAcceso + "," + nombre + "," + apellidos + "," + email);
                     userExists = true;
                 } else {
                     writer.write(line);
@@ -227,7 +228,7 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
 
             if (!userExists) {
                 // Crear nuevo usuario si no existe
-                writer.write(login + "," + password + "," + nombre + "," + apellidos + "," + email + "," + nivelAcceso);
+                writer.write(login + "," + password + "," + nivelAcceso + "," + nombre + "," + apellidos + "," + email);
                 writer.newLine();
                 JOptionPane.showMessageDialog(this, "Usuario creado exitosamente.");
             } else {
@@ -274,10 +275,11 @@ public class MantenimientoUsuarios extends javax.swing.JFrame {
                 if (data[0].equals(login)) {
                     // Usuario encontrado, cargar los datos y cambiar a modo modificación
                     txtPassword.setText(data[1]);
-                    txtNombre.setText(data[2]);
-                    txtApellidos.setText(data[3]);
-                    txtEmail.setText(data[4]);
-                    cbNivelAcceso.setSelectedItem(data[5]);
+                    cbNivelAcceso.setSelectedItem(data[2]);
+                    txtNombre.setText(data[3]);
+                    txtApellidos.setText(data[4]);
+                    txtEmail.setText(data[5]);
+                    
 
                     isModifying = true;
                     JOptionPane.showMessageDialog(this, "Usuario encontrado. Modo modificación activado.");

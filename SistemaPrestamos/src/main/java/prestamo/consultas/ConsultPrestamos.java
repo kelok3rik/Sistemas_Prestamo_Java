@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package prestamo.consultas;
-
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,15 +15,15 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author erikr
  */
-public class ConsultasFiador extends javax.swing.JFrame {
+public class ConsultPrestamos extends javax.swing.JFrame {
      private DefaultTableModel tableModel;
     /**
-     * Creates new form ConsultasFiador
+     * Creates new form ConsultPrestamos
      */
-    public ConsultasFiador() {
+    public ConsultPrestamos() {
         initComponents();
         initializeTableModel();
-        cargarFiadores();
+        cargarPrestamos();
     }
 
     /**
@@ -54,44 +53,44 @@ public class ConsultasFiador extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "NOMBRE", "DIRECCION", "CEDULA", "TELEFONO", "EMPRESA", "OCUPACION", "SUELDO", "SEXO"
+                "ID PRESTAMO", "ID CLIENTE", "ID FIADOR", "ESTADO", "EMISION", "CUOTAS", "FINAL", "GARANTIA", "MONTO", "BALANCE", "TASA", "CUOTA FIJA"
             }
         ));
         jTable1.setEnabled(false);
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel1.setText("CONSULTA FIADORES");
+        jLabel1.setText("CONSULTA PRESTAMOS");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(379, 379, 379)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(471, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBuscarID))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 842, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(177, 177, 177))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(379, 379, 379)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtBuscarID)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtBuscarID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
@@ -101,78 +100,78 @@ public class ConsultasFiador extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void initializeTableModel() {
-        tableModel = new DefaultTableModel(new Object[]{"ID", "Nombre Completo", "Dirección", "Cédula", "Teléfono", "Empresa", "Ocupación", "Sueldo", "Sexo"}, 0);
+    
+     private void initializeTableModel() {
+        tableModel = new DefaultTableModel(new Object[]{
+            "ID Préstamo", "ID Cliente", "ID Fiador", "Estado", "Fecha Inicio", "Plazo", "Fecha Final", "Tipo Garantía", "Monto", "Balance", "Tasa", "Cuota Fija"
+        }, 0);
         jTable1.setModel(tableModel);
     }
 
-    private void cargarFiadores() {
-        try (BufferedReader br = new BufferedReader(new FileReader("fiadores.txt"))) {
+    private void cargarPrestamos() {
+        try (BufferedReader br = new BufferedReader(new FileReader("prestamos.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                 System.out.println("Leyendo línea: " + linea); // Verifica la línea leída
-                String[] partes = linea.split(";");
+                String[] partes = linea.split(",");
                 if (partes.length == 12) {
-                    String nombreCompleto = partes[1] + " " + partes[2] + " " + partes[3]; // Ajuste si el nombre está en otras posiciones
                     tableModel.addRow(new Object[]{
-                        partes[0], // ID
-                        nombreCompleto, // Nombre Completo
-                        partes[4], // Dirección
-                        partes[5], // Cédula
-                        partes[6], // Teléfono
-                        partes[7], // Empresa
-                        partes[8], // Ocupación
-                        partes[9], // Sueldo
-                        partes[11]
+                        partes[0], // ID Préstamo
+                        partes[1], // ID Cliente
+                        partes[2], // ID Fiador
+                        partes[3], // Estado
+                        partes[4], // Fecha Inicio
+                        partes[5], // Plazo
+                        partes[6], // Fecha Final
+                        partes[7], // Tipo Garantía
+                        Double.parseDouble(partes[8]), // Monto
+                        Double.parseDouble(partes[9]), // Balance
+                        Double.parseDouble(partes[10]), // Tasa
+                        Double.parseDouble(partes[11])  // Cuota Fija
                     });
-                } else{
-                    System.out.println("Formato incorrecto: " + linea); // Depuración: formato incorrecto
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo de clientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de préstamos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void filtrarFiadores(String searchText) {
+    private void filtrarPrestamos(String searchText) {
         tableModel.setRowCount(0);
 
-        try (BufferedReader br = new BufferedReader(new FileReader("fiadores.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("prestamos.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split(";");
+                String[] partes = linea.split(",");
                 if (partes.length == 12) {
-                    String nombreCompleto = partes[1] + " " + partes[2] + partes[3]; // Ajuste si el nombre está en otras posiciones
-                    if (searchText.isEmpty() || partes[0].contains(searchText) || nombreCompleto.toLowerCase().contains(searchText.toLowerCase())) {
+                    if (searchText.isEmpty() || partes[0].contains(searchText)) {
                         tableModel.addRow(new Object[]{
-                            partes[0], // ID
-                            nombreCompleto, // Nombre Completo
-                            partes[4], // Dirección
-                            partes[5], // Cédula
-                            partes[6], // Teléfono
-                            partes[7], // Empresa
-                            partes[8], // Ocupación
-                            partes[9], // Sueldo
-                            partes[11]
-                            
+                            partes[0], // ID Préstamo
+                            partes[1], // ID Cliente
+                            partes[2], // ID Fiador
+                            partes[3], // Estado
+                            partes[4], // Fecha Inicio
+                            partes[5], // Plazo
+                            partes[6], // Fecha Final
+                            partes[7], // Tipo Garantía
+                            Double.parseDouble(partes[8]), // Monto
+                            Double.parseDouble(partes[9]), // Balance
+                            Double.parseDouble(partes[10]), // Tasa
+                            Double.parseDouble(partes[11])  // Cuota Fija
                         });
                     }
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo de clientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo de préstamos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
     
     private void txtBuscarIDKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarIDKeyReleased
         // TODO add your handling code here:
         String idGarantia = txtBuscarID.getText().trim();
-        filtrarFiadores(idGarantia); // Call the filter method with the entered ID
+        filtrarPrestamos(idGarantia); // Call the filter method with the entered ID
     }//GEN-LAST:event_txtBuscarIDKeyReleased
 
-    
     /**
      * @param args the command line arguments
      */
@@ -190,20 +189,20 @@ public class ConsultasFiador extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConsultasFiador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConsultasFiador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConsultasFiador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConsultasFiador.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ConsultasFiador().setVisible(true);
+                new ConsultPrestamos().setVisible(true);
             }
         });
     }

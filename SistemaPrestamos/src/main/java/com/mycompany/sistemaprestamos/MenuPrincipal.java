@@ -4,6 +4,9 @@
  */
 package com.mycompany.sistemaprestamos;
 
+import prestamo.consultas.ConsultPrestamos;
+import prestamo.consultas.ConsultPrestamosPorFechas;
+import prestamo.consultas.ConsultPrestamosPorFechasVencimiento;
 import prestamo.mantenimiento.MantenimientoUsuarios;
 import prestamo.mantenimiento.MantenimientoGarantias;
 import prestamo.mantenimiento.MantenimientoClientes;
@@ -190,12 +193,27 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jMenu4.add(jMenuItem13);
 
         jMenuItem14.setText("De prestamos");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem14);
 
         jMenuItem15.setText("De prestamos por fecha");
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem15);
 
-        jMenuItem16.setText("De prestamos por fecha vencimiento");
+        jMenuItem16.setText("De prestamos por fecha de vencimiento");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem16);
 
         jMenuItem17.setText("De prestamos con saldos pendientes");
@@ -307,6 +325,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
         ConsultasClientes cstc = new ConsultasClientes();
         cstc.setVisible(true);
     }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        // TODO add your handling code here:
+        ConsultPrestamos cstp = new ConsultPrestamos();
+        cstp.setVisible(true);
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+        // TODO add your handling code here:
+        ConsultPrestamosPorFechas cstppf = new ConsultPrestamosPorFechas();
+        cstppf.setVisible(true);
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
+
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+        // TODO add your handling code here:
+        ConsultPrestamosPorFechasVencimiento cstppfv = new ConsultPrestamosPorFechasVencimiento();
+        cstppfv.setVisible(true);
+    }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     /**
      * @param args the command line arguments
