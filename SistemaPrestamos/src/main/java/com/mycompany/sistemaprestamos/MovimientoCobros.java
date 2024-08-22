@@ -449,8 +449,14 @@ public class MovimientoCobros extends javax.swing.JFrame {
     private void limpiarCampos() {
         txtIdCobro.setText("");
         txtIdCteCobro.setText("");
+        txtFechaCobro.setText("");
         txtValorCobro.setText("");
         txtConceptoCobro.setText("");
+        txtNombreCliente.setText("");
+        txtIDPrestamo.setText("");
+
+        // Limpiar cualquier selección de tabla
+        jTable1.clearSelection();
 
     }
 

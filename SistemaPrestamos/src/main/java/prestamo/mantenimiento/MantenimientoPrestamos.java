@@ -520,44 +520,63 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtIDPrestamoActionPerformed
 
     private void txtIDClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDClienteActionPerformed
-        // TODO add your handling code here:
-        String idCliente = txtIDCliente.getText().trim();
-        if (idCliente.isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                    "El campo ID Cliente no puede estar vacío.",
-                    "Campo Vacío",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        String idCliente = txtIDCliente.getText();
+        boolean clienteEncontrado = false;
 
-        String nombreCliente = null;
-        try (BufferedReader br = new BufferedReader(new FileReader("clientes.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(","); // Ajusta el delimitador según tu archivo
-                if (parts.length >= 4 && parts[0].trim().equals(idCliente)) {
-                    // Concatenar nombre y apellidos con espacios
-                    nombreCliente = parts[1].trim() + " " + parts[2].trim() + " " + parts[3].trim();
+        try {
+            BufferedReader readerClientes = new BufferedReader(new FileReader("Clientes.txt"));
+            BufferedReader readerFiadores = new BufferedReader(new FileReader("Fiadores.txt"));
+            String lineaCliente;
+
+            while ((lineaCliente = readerClientes.readLine()) != null) {
+                String[] datosCliente = lineaCliente.split(",");  // Suponiendo que los datos están separados por comas
+                String idClienteArchivo = datosCliente[0];
+
+                if (idClienteArchivo.equals(idCliente)) {
+                    clienteEncontrado = true;
+                    String nombreCliente = datosCliente[1] +" "+datosCliente[2] +" "+datosCliente[3] ;  // Suponiendo que el nombre del cliente es el segundo elemento
+                    String idFiador = datosCliente[11];  // Suponiendo que el ID del fiador es el cuarto elemento
+                    String lineaFiador;
+
+                    System.out.println("Cliente encontrado:");
+                    System.out.println("ID Cliente: " + idClienteArchivo);
+                    System.out.println("Nombre Cliente: " + nombreCliente);
+                    System.out.println("ID Fiador: " + idFiador);
+
+                    while ((lineaFiador = readerFiadores.readLine()) != null) {
+                        String[] datosFiador = lineaFiador.split(";");
+                        String idFiadorArchivo = datosFiador[0];
+
+                        if (idFiadorArchivo.equals(idFiador)) {
+                            String nombreFiador = datosFiador[1]+" "+datosFiador[2]+" "+ datosFiador[3];  // Suponiendo que el nombre del fiador es el segundo elemento
+                            txtNombreCliente1.setText(nombreCliente);
+                            txtNombreFiador.setText(nombreFiador);  // Asignar el nombre del fiador a un campo de texto
+                            txtIDFiador.setText(idFiador);
+                            System.out.println("Fiador encontrado:");
+                            System.out.println("ID Fiador: " + idFiadorArchivo);
+                            System.out.println("Nombre Fiador: " + nombreFiador);
+                            break;
+                        }
+                    }
                     break;
                 }
             }
+
+            if (!clienteEncontrado) {
+                System.out.println("Cliente no encontrado.");
+                JOptionPane.showMessageDialog(this, "Cliente no encontrado");
+            } else {
+                System.out.println("Fiador encontrado y nombre asignado.");
+                JOptionPane.showMessageDialog(this, "Fiador encontrado y nombre asignado");
+            }
+
+            readerClientes.close();
+            readerFiadores.close();
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer el archivo: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo: " + e.getMessage());
         }
-
-        if (nombreCliente == null) {
-            JOptionPane.showMessageDialog(null,
-                    "El ID Cliente '" + idCliente + "' no existe.",
-                    "Error de Validación",
-                    JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null,
-                    "El ID Cliente '" + idCliente + "' corresponde al cliente: " + nombreCliente,
-                    "Cliente Encontrado",
-                    JOptionPane.INFORMATION_MESSAGE);
-            txtNombreCliente1.setText(nombreCliente);
-        }
-
     }//GEN-LAST:event_txtIDClienteActionPerformed
 
     private void txtPlazoPrestamoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtPlazoPrestamoStateChanged
@@ -758,17 +777,19 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
     private void createPDF(String idPrestamo) {
         PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        PDPageContentStream contentStream = null;
+
         try {
             // Crear una nueva página
-            PDPage page = new PDPage();
             document.addPage(page);
 
             // Crear flujo de contenido para la página
-            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream = new PDPageContentStream(document, page);
 
             // Título del documento
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12); // Establecer la fuente antes de comenzar el texto
             contentStream.beginText();
-            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12);
             contentStream.newLineAtOffset(220, 750);
             contentStream.showText("Detalle de Cuotas del Préstamo ID: " + idPrestamo);
             contentStream.endText();
@@ -777,7 +798,6 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             float margin = 50;
             float yPosition = 700;
             float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
-            float tableHeight = 20f;
             float rowHeight = 20f;
             float cellMargin = 5f;
 
@@ -785,7 +805,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             String[] headers = {"ID Préstamo", "ID Cliente", "Fecha Cuota", "Número Cuota", "Valor Cuota", "Amortización", "Interés"};
 
             // Dibujar encabezados
-            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8);
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
             float headerXPosition = margin;
             for (String header : headers) {
                 contentStream.beginText();
@@ -799,12 +819,12 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             // Leer cuotas del archivo y agregarlas a la tabla
             try (BufferedReader reader = new BufferedReader(new FileReader("Cuota_Prestamo.txt"))) {
                 String line;
-                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8);
                 while ((line = reader.readLine()) != null) {
                     String[] datos = line.split(",");
-                    if (datos.length >= 8 && datos[0].equals(idPrestamo)) {
+                    if (datos.length >= 7 && datos[0].equals(idPrestamo)) {
                         float cellXPosition = margin;
                         for (int i = 0; i < headers.length; i++) {
+                            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
                             contentStream.beginText();
                             contentStream.newLineAtOffset(cellXPosition + cellMargin, yPosition + cellMargin);
                             contentStream.showText(datos[i]);
@@ -820,11 +840,23 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                             document.addPage(page);
                             contentStream = new PDPageContentStream(document, page);
                             yPosition = 700;
+
+                            // Redibujar encabezados en la nueva página
+                            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
+                            headerXPosition = margin;
+                            for (String header : headers) {
+                                contentStream.beginText();
+                                contentStream.newLineAtOffset(headerXPosition + cellMargin, yPosition + cellMargin);
+                                contentStream.showText(header);
+                                contentStream.endText();
+                                headerXPosition += tableWidth / headers.length;
+                            }
+                            yPosition -= rowHeight;
                         }
                     }
                 }
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
             // Cerrar el flujo de contenido
@@ -833,13 +865,16 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             // Guardar el documento
             String fileName = "CUOTA_PRESTAMO_" + idPrestamo + ".pdf";
             document.save(fileName);
-            JOptionPane.showMessageDialog(this, "PDF generado exitosamente: " + fileName);
+            JOptionPane.showMessageDialog(null, "PDF generado exitosamente: " + fileName);
 
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al crear el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al crear el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
+            // Cerrar el documento
             try {
-                document.close();
+                if (document != null) {
+                    document.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -866,8 +901,6 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        // Limpiar todos los campos de texto
-
         txtIDPrestamo.setText("");
         txtIDCliente.setText("");
         txtIDFiador.setText("");
@@ -879,15 +912,19 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         txtTasaPrestamo.setText("");
         txtTasaFija.setText("");
 
-        // Restablecer el JSpinner a su valor por defecto (por ejemplo, 1 mes)
+        // Limpiar campos de texto adicionales
+        txtNombreFiador.setText("");
+        txtNombreCliente1.setText("");
+        txtTipoGarantia1.setText("");
+
+        // Restablecer el JSpinner a su valor inicial
         txtPlazoPrestamo.setValue(1);
 
-        // Desmarcar el JCheckBox
-        jCheckBox1.setSelected(false);
+        // Restablecer el estado del JCheckBox
+        jCheckBox1.setSelected(true);
+
         setFechaInicioActual();
 
-        // Opcional: Si quieres restablecer también el estado de los botones, puedes hacerlo aquí
-        // jButton1.setEnabled(true); // Si quieres habilitar el botón "Registrar" de nuevo
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtIDFiadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDFiadorActionPerformed
