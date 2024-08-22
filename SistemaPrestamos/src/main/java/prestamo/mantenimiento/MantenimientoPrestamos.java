@@ -152,6 +152,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             }
         });
 
+        txtIDFiador.setEditable(false);
         txtIDFiador.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIDFiadorActionPerformed(evt);
