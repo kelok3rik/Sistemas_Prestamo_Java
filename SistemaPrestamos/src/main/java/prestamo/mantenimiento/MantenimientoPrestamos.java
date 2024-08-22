@@ -204,6 +204,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
 
         jCheckBox1.setSelected(true);
         jCheckBox1.setText("Activo");
+        jCheckBox1.setEnabled(false);
 
         jLabel14.setText("Meses");
 
