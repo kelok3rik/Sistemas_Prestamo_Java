@@ -37,6 +37,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -754,9 +755,10 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                             idPrestamo, idCliente, fechaCuota, mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota, status);
 
                     // Agregar la línea de cuota a la lista
-                    String lineaCuota = String.format("%s,%s,%s,%d,%.2f,%.2f,%.2f,%s",
+                    String lineaCuota = String.format(Locale.US, "%s,%s,%s,%d,%.2f,%.2f,%.2f,%s",
                             idPrestamo, idCliente, fechaCuota, mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota, status);
                     lineasCuota.add(lineaCuota);
+
                 }
             }
 
@@ -1092,7 +1094,7 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
             }
 
             // Mostrar la cuota fija calculada en la interfaz gráfica
-            txtTasaFija.setText(String.format("%.2f", cuotaFija));
+            txtTasaFija.setText(String.format(Locale.US, "%.2f", cuotaFija));
 
         } catch (NumberFormatException e) {
             // Manejar errores en la entrada de datos

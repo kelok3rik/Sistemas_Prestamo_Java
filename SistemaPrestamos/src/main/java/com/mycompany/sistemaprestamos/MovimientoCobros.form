@@ -55,7 +55,7 @@
                               <Component id="jLabel4" min="-2" pref="66" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtNombreCliente" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -184,7 +184,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtValorCobro">
       <Properties>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="editable" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnCobrar">

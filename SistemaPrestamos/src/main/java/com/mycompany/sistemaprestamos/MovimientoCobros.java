@@ -104,7 +104,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
 
         txtFechaCobro.setEditable(false);
 
-        txtValorCobro.setEnabled(false);
+        txtValorCobro.setEditable(false);
 
         btnCobrar.setText("COBRAR");
         btnCobrar.addActionListener(new java.awt.event.ActionListener() {
@@ -193,7 +193,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtNombreCliente)
-                                .addGap(13, 13, 13))))
+                                .addGap(30, 30, 30))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)))
