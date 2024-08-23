@@ -183,6 +183,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtValorCobro">
+      <Properties>
+        <Property name="enabled" type="boolean" value="false"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnCobrar">
       <Properties>
@@ -213,12 +216,15 @@
                 <Column editable="false" title="FECHA" type="java.lang.Object"/>
                 <Column editable="false" title="CUOTA" type="java.lang.Object"/>
                 <Column editable="false" title="VALOR CAPITAL" type="java.lang.Object"/>
-                <Column editable="true" title="VALOR INTERNO" type="java.lang.Object"/>
+                <Column editable="false" title="VALOR INTERNO" type="java.lang.Object"/>
                 <Column editable="false" title="ESTADO" type="java.lang.Object"/>
               </Table>
             </Property>
             <Property name="selectionMode" type="int" value="0"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable1MouseClicked"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

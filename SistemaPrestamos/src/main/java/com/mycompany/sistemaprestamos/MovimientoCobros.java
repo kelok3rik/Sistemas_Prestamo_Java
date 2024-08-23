@@ -41,7 +41,13 @@ public class MovimientoCobros extends javax.swing.JFrame {
         tblModel = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{"ID COBRO", "FECHA", "CUOTA", "VALOR CAPITAL", "VALOR INTERNO", "ESTADO"}
-        );
+        ) {
+            // Sobrescribimos el método isCellEditable para que todas las celdas no sean editables.
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         jTable1.setModel(tblModel);
     }
 
@@ -98,6 +104,8 @@ public class MovimientoCobros extends javax.swing.JFrame {
 
         txtFechaCobro.setEditable(false);
 
+        txtValorCobro.setEnabled(false);
+
         btnCobrar.setText("COBRAR");
         btnCobrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -119,7 +127,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, true, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -127,6 +135,11 @@ public class MovimientoCobros extends javax.swing.JFrame {
             }
         });
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         btnLimpiar.setText("LIMPIAR");
@@ -444,6 +457,23 @@ public class MovimientoCobros extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIDPrestamoActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        // Obtén la fila seleccionada
+        int filaSeleccionada = jTable1.getSelectedRow();
+
+        // Asegúrate de que hay una fila seleccionada
+        if (filaSeleccionada != -1) {
+            // Obtén el valor de la columna CUOTA en la fila seleccionada
+            Object valorCuota = jTable1.getValueAt(filaSeleccionada, 2); // Reemplaza columnaCuotaIndex con el índice real de la columna CUOTA
+
+            // Si el valor no es nulo, lo asignamos al campo de texto
+            if (valorCuota != null) {
+                txtValorCobro.setText(valorCuota.toString());
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -500,6 +530,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
         }
 
         // Buscar las cuotas del cliente para el préstamo específico
+        boolean cuotaEncontrada = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(archivoCuotas))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -515,12 +546,19 @@ public class MovimientoCobros extends javax.swing.JFrame {
                         atributos[6].trim(), // VALOR INTERES
                         "Pendiente" // ESTADO
                     });
+                    cuotaEncontrada = true;
                     System.out.println("Cuota añadida a la tabla: " + Arrays.toString(atributos));
                 }
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
+            return;
+        }
+
+        // Si no se encontró ninguna cuota, mostrar un mensaje
+        if (!cuotaEncontrada) {
+            JOptionPane.showMessageDialog(this, "No se encontraron cuotas pendientes para el cliente con ID: " + idCliente + " y el préstamo con ID: " + idPrestamo, "Información", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
