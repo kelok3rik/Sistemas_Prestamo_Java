@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -480,8 +481,8 @@ public class MovimientoCobros extends javax.swing.JFrame {
 
             while ((line = clienteReader.readLine()) != null) {
                 String[] atributosCliente = line.split(",");
-                if (atributosCliente[0].equals(idCliente)) { // Suponiendo que el ID del cliente está en la primera posición
-                    txtNombreCliente.setText(atributosCliente[1]); // Suponiendo que el nombre está en la segunda posición
+                if (atributosCliente[0].trim().equals(idCliente)) { // Verificar que el ID del cliente coincide
+                    txtNombreCliente.setText(atributosCliente[1].trim()); // Asignar el nombre del cliente
                     clienteEncontrado = true;
                     break;
                 }
@@ -504,16 +505,17 @@ public class MovimientoCobros extends javax.swing.JFrame {
             while ((line = reader.readLine()) != null) {
                 String[] atributos = line.split(",");
 
-                // Comprobar si la cuota pertenece al cliente, al préstamo específico y está pendiente
-                if (atributos[1].equals(idCliente) && atributos[0].equals(idPrestamo) && atributos[7].equals("false")) {
+                // Verificar coincidencia exacta del ID de préstamo y del ID de cliente
+                if (atributos[1].trim().equals(idCliente) && atributos[0].trim().equals(idPrestamo) && atributos[7].trim().equals("false")) {
                     tblModel.addRow(new Object[]{
-                        atributos[3], // CUOTA
-                        atributos[2], // FECHA
-                        atributos[4], // MONTO
-                        atributos[5], // VALOR CAPITAL
-                        atributos[6], // VALOR INTERNO
-                        atributos[7] // ESTADO
+                        atributos[3].trim(), // CUOTA
+                        atributos[2].trim(), // FECHA
+                        atributos[4].trim(), // MONTO
+                        atributos[5].trim(), // VALOR CAPITAL
+                        atributos[6].trim(), // VALOR INTERES
+                        "Pendiente" // ESTADO
                     });
+                    System.out.println("Cuota añadida a la tabla: " + Arrays.toString(atributos));
                 }
             }
         } catch (IOException e) {
