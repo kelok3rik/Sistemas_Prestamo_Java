@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -276,7 +277,7 @@ public class ReversarCobros extends javax.swing.JFrame {
                         balancePrestamo = montoPrestado;
                     }
 
-                    partes[9] = String.format("%.2f", balancePrestamo); // Actualizar balance
+                      partes[9] = String.format(Locale.US, "%.2f", balancePrestamo); // Actualizar balance
 
                     if (balancePrestamo > 0) {
                         partes[3] = "true"; // Estado_Prestamo = false si el balance es mayor a cero

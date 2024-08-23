@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -278,10 +279,10 @@ public class GenerarCobros extends javax.swing.JFrame {
                         balancePrestamo = 0;
                     }
 
-                    partes[9] = String.format("%.2f", balancePrestamo); // Actualizar balance
+                    partes[9] = String.format(Locale.US, "%.2f", balancePrestamo); // Actualizar balance
 
                     if (balancePrestamo <= 0) {
-                        partes[3] = "false"; // Estado_Prestamo = true si el balance es cero o menor
+                        partes[3] = "false"; // Estado_Prestamo = false si el balance es cero o menor
                     }
 
                     linea = String.join(",", partes);
@@ -303,9 +304,6 @@ public class GenerarCobros extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "No se pudo eliminar el archivo original de préstamos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Mostrar un único mensaje con la cantidad total de pagos modificados
-        //   JOptionPane.showMessageDialog(null, "Préstamos actualizados exitosamente.\nCantidad total de pagos modificados: " + pagosModificados, "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private static Date parsearFecha(String fechaStr, SimpleDateFormat sdf) {
