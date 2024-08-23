@@ -50,7 +50,6 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
  *
  * @author erikr
  */
-
 public class MantenimientoPrestamos extends javax.swing.JFrame {
 
     /**
@@ -421,6 +420,12 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
                         txtBalancePrestamo.setText(atributos[9].trim()); // Balance
                         txtTasaPrestamo.setText(atributos[10].trim()); // Tasa
                         txtTasaFija.setText(atributos[11].trim()); // Tasa Fija
+                        // Manejar el estado del jCheckBox1 basado en atributos[3]
+                        if ("false".equals(atributos[3].trim())) {
+                            jCheckBox1.setSelected(false); // Desactivar el check
+                        } else {
+                            jCheckBox1.setSelected(true); // Activar el check
+                        }
 
                         // Buscar y mostrar el nombre del cliente
                         String idCliente = atributos[1].trim();
@@ -773,133 +778,133 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al generar las cuotas del préstamo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void createPDF(String idPrestamo) {
-    PDDocument document = new PDDocument();
-    PDPage page = new PDPage();
-    PDPageContentStream contentStream = null;
+        PDDocument document = new PDDocument();
+        PDPage page = new PDPage();
+        PDPageContentStream contentStream = null;
 
-    try {
-        // Crear una nueva página
-        document.addPage(page);
+        try {
+            // Crear una nueva página
+            document.addPage(page);
 
-        // Crear flujo de contenido para la página
-        contentStream = new PDPageContentStream(document, page);
+            // Crear flujo de contenido para la página
+            contentStream = new PDPageContentStream(document, page);
 
-        // Título del documento
-        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12); // Establecer la fuente antes de comenzar el texto
-        contentStream.beginText();
-        contentStream.newLineAtOffset(220, 750);
-        contentStream.showText("Detalle de Cuotas del Préstamo ID: " + idPrestamo);
-        contentStream.endText();
-
-        // Posición inicial para la tabla
-        float margin = 50;
-        float yPosition = 700;
-        float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
-        float rowHeight = 20f;
-        float cellMargin = 5f;
-
-        // Definir encabezados de la tabla
-        String[] headers = {"ID Préstamo", "ID Cliente", "Fecha Cuota", "Número Cuota", "Valor Cuota", "Amortización", "Interés"};
-
-        // Dibujar encabezados
-        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
-        float headerXPosition = margin;
-        for (String header : headers) {
+            // Título del documento
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 12); // Establecer la fuente antes de comenzar el texto
             contentStream.beginText();
-            contentStream.newLineAtOffset(headerXPosition + cellMargin, yPosition + cellMargin);
-            contentStream.showText(header);
+            contentStream.newLineAtOffset(220, 750);
+            contentStream.showText("Detalle de Cuotas del Préstamo ID: " + idPrestamo);
             contentStream.endText();
-            headerXPosition += tableWidth / headers.length;
-        }
-        yPosition -= rowHeight;
 
-        // Leer cuotas del archivo y agregarlas a la tabla
-        try (BufferedReader reader = new BufferedReader(new FileReader("Cuota_Prestamo.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] datos = line.split(",");
-                if (datos.length >= 7 && datos[0].equals(idPrestamo)) {
-                    float cellXPosition = margin;
-                    for (int i = 0; i < headers.length; i++) {
-                        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
-                        contentStream.beginText();
-                        contentStream.newLineAtOffset(cellXPosition + cellMargin, yPosition + cellMargin);
-                        contentStream.showText(datos[i]);
-                        contentStream.endText();
-                        cellXPosition += tableWidth / headers.length;
-                    }
-                    yPosition -= rowHeight;
+            // Posición inicial para la tabla
+            float margin = 50;
+            float yPosition = 700;
+            float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
+            float rowHeight = 20f;
+            float cellMargin = 5f;
 
-                    // Verificar si se necesita una nueva página
-                    if (yPosition < margin) {
-                        contentStream.close();
-                        page = new PDPage();
-                        document.addPage(page);
-                        contentStream = new PDPageContentStream(document, page);
-                        yPosition = 700;
+            // Definir encabezados de la tabla
+            String[] headers = {"ID Préstamo", "ID Cliente", "Fecha Cuota", "Número Cuota", "Valor Cuota", "Amortización", "Interés"};
 
-                        // Redibujar encabezados en la nueva página
-                        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
-                        headerXPosition = margin;
-                        for (String header : headers) {
+            // Dibujar encabezados
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
+            float headerXPosition = margin;
+            for (String header : headers) {
+                contentStream.beginText();
+                contentStream.newLineAtOffset(headerXPosition + cellMargin, yPosition + cellMargin);
+                contentStream.showText(header);
+                contentStream.endText();
+                headerXPosition += tableWidth / headers.length;
+            }
+            yPosition -= rowHeight;
+
+            // Leer cuotas del archivo y agregarlas a la tabla
+            try (BufferedReader reader = new BufferedReader(new FileReader("Cuota_Prestamo.txt"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] datos = line.split(",");
+                    if (datos.length >= 7 && datos[0].equals(idPrestamo)) {
+                        float cellXPosition = margin;
+                        for (int i = 0; i < headers.length; i++) {
+                            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
                             contentStream.beginText();
-                            contentStream.newLineAtOffset(headerXPosition + cellMargin, yPosition + cellMargin);
-                            contentStream.showText(header);
+                            contentStream.newLineAtOffset(cellXPosition + cellMargin, yPosition + cellMargin);
+                            contentStream.showText(datos[i]);
                             contentStream.endText();
-                            headerXPosition += tableWidth / headers.length;
+                            cellXPosition += tableWidth / headers.length;
                         }
                         yPosition -= rowHeight;
+
+                        // Verificar si se necesita una nueva página
+                        if (yPosition < margin) {
+                            contentStream.close();
+                            page = new PDPage();
+                            document.addPage(page);
+                            contentStream = new PDPageContentStream(document, page);
+                            yPosition = 700;
+
+                            // Redibujar encabezados en la nueva página
+                            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.COURIER), 8); // Establecer la fuente antes de comenzar el texto
+                            headerXPosition = margin;
+                            for (String header : headers) {
+                                contentStream.beginText();
+                                contentStream.newLineAtOffset(headerXPosition + cellMargin, yPosition + cellMargin);
+                                contentStream.showText(header);
+                                contentStream.endText();
+                                headerXPosition += tableWidth / headers.length;
+                            }
+                            yPosition -= rowHeight;
+                        }
                     }
                 }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+
+            // Cerrar el flujo de contenido
+            contentStream.close();
+
+            // Guardar el documento
+            String fileName = "CUOTA_PRESTAMO_" + idPrestamo + ".pdf";
+            document.save(fileName);
+            JOptionPane.showMessageDialog(null, "PDF generado exitosamente: " + fileName);
+
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error al leer el archivo de cuotas.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        // Cerrar el flujo de contenido
-        contentStream.close();
-
-        // Guardar el documento
-        String fileName = "CUOTA_PRESTAMO_" + idPrestamo + ".pdf";
-        document.save(fileName);
-        JOptionPane.showMessageDialog(null, "PDF generado exitosamente: " + fileName);
-
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(null, "Error al crear el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
-    } finally {
-        // Cerrar el documento
-        try {
-            if (document != null) {
-                document.close();
+            JOptionPane.showMessageDialog(null, "Error al crear el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cerrar el documento
+            try {
+                if (document != null) {
+                    document.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-}
 
     private String calcularFechaCuota(String fechaInicio, int cuotaNumero) throws ParseException {
-    // Definir el formato de la fecha
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        // Definir el formato de la fecha
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    // Convertir la fecha de inicio a un objeto Date
-    Date fechaInicioDate = sdf.parse(fechaInicio);
+        // Convertir la fecha de inicio a un objeto Date
+        Date fechaInicioDate = sdf.parse(fechaInicio);
 
-    // Crear un objeto Calendar y establecer la fecha de inicio
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(fechaInicioDate);
+        // Crear un objeto Calendar y establecer la fecha de inicio
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicioDate);
 
-    // Añadir el número de meses correspondiente al número de cuota
-    calendar.add(Calendar.MONTH, cuotaNumero);
+        // Añadir el número de meses correspondiente al número de cuota
+        calendar.add(Calendar.MONTH, cuotaNumero);
 
-    // Formatear la fecha calculada al formato String
-    return sdf.format(calendar.getTime());
-}
+        // Formatear la fecha calculada al formato String
+        return sdf.format(calendar.getTime());
+    }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -1047,197 +1052,197 @@ public class MantenimientoPrestamos extends javax.swing.JFrame {
     }//GEN-LAST:event_txtTipoGarantia1ActionPerformed
 
     private void calcularCuotaFija() {
-    try {
-        // Obtener los valores de la interfaz gráfica
-        double montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText());
-        double tasaAnual = Double.parseDouble(txtTasaPrestamo.getText()) / 100; // Convertir a porcentaje
-        int meses = (Integer) txtPlazoPrestamo.getValue();
+        try {
+            // Obtener los valores de la interfaz gráfica
+            double montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText());
+            double tasaAnual = Double.parseDouble(txtTasaPrestamo.getText()) / 100; // Convertir a porcentaje
+            int meses = (Integer) txtPlazoPrestamo.getValue();
 
-        // Convertir la tasa anual a tasa mensual
-        double tasaMensual = tasaAnual / 12;
+            // Convertir la tasa anual a tasa mensual
+            double tasaMensual = tasaAnual / 12;
 
-        // Verificar si la tasa mensual es cero
-        if (tasaMensual == 0) {
-            JOptionPane.showMessageDialog(this, "La tasa de interés mensual no puede ser cero.", "Error", JOptionPane.ERROR_MESSAGE);
-            return; // Salir del método en caso de error
+            // Verificar si la tasa mensual es cero
+            if (tasaMensual == 0) {
+                JOptionPane.showMessageDialog(this, "La tasa de interés mensual no puede ser cero.", "Error", JOptionPane.ERROR_MESSAGE);
+                return; // Salir del método en caso de error
+            }
+
+            // Calcular la cuota fija mensual utilizando la fórmula de amortización
+            double cuotaFija = (montoPrestamo * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -meses));
+
+            // Inicializar saldo pendiente
+            double saldoPendiente = montoPrestamo;
+            double valorInteresCuota;
+            double valorAmortizacionCuota;
+
+            // Imprimir encabezado de la tabla
+            System.out.println("Mes\tValor_Cuota\tValor_Amortizacion_Cuota\tValor_Interes_Cuota");
+
+            // Calcular y mostrar los detalles para cada mes
+            for (int mes = 1; mes <= meses; mes++) {
+                valorInteresCuota = saldoPendiente * tasaMensual; // Interés de la cuota
+                valorAmortizacionCuota = cuotaFija - valorInteresCuota; // Parte de la cuota que amortiza el capital
+                saldoPendiente -= valorAmortizacionCuota; // Actualizar saldo pendiente
+
+                // Mostrar los detalles de la cuota en la consola
+                System.out.printf("%d\t%.2f\t%.2f\t%.2f%n", mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota);
+
+                // Determinar el estado de la cuota (este valor no se usa actualmente, pero se podría implementar)
+                String status = (saldoPendiente <= 0) ? "Pagada" : "Pendiente";
+            }
+
+            // Mostrar la cuota fija calculada en la interfaz gráfica
+            txtTasaFija.setText(String.format("%.2f", cuotaFija));
+
+        } catch (NumberFormatException e) {
+            // Manejar errores en la entrada de datos
+            JOptionPane.showMessageDialog(this, "Por favor ingrese valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Calcular la cuota fija mensual utilizando la fórmula de amortización
-        double cuotaFija = (montoPrestamo * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -meses));
-
-        // Inicializar saldo pendiente
-        double saldoPendiente = montoPrestamo;
-        double valorInteresCuota;
-        double valorAmortizacionCuota;
-
-        // Imprimir encabezado de la tabla
-        System.out.println("Mes\tValor_Cuota\tValor_Amortizacion_Cuota\tValor_Interes_Cuota");
-
-        // Calcular y mostrar los detalles para cada mes
-        for (int mes = 1; mes <= meses; mes++) {
-            valorInteresCuota = saldoPendiente * tasaMensual; // Interés de la cuota
-            valorAmortizacionCuota = cuotaFija - valorInteresCuota; // Parte de la cuota que amortiza el capital
-            saldoPendiente -= valorAmortizacionCuota; // Actualizar saldo pendiente
-
-            // Mostrar los detalles de la cuota en la consola
-            System.out.printf("%d\t%.2f\t%.2f\t%.2f%n", mes, cuotaFija, valorAmortizacionCuota, valorInteresCuota);
-
-            // Determinar el estado de la cuota (este valor no se usa actualmente, pero se podría implementar)
-            String status = (saldoPendiente <= 0) ? "Pagada" : "Pendiente";
-        }
-
-        // Mostrar la cuota fija calculada en la interfaz gráfica
-        txtTasaFija.setText(String.format("%.2f", cuotaFija));
-
-    } catch (NumberFormatException e) {
-        // Manejar errores en la entrada de datos
-        JOptionPane.showMessageDialog(this, "Por favor ingrese valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
     }
-}
 
     private void setFechaInicioActual() {
-    // Obtener la fecha actual del sistema
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    String fechaActual = dateFormat.format(new Date());
-    System.out.println("Fecha actual del sistema: " + fechaActual);
+        // Obtener la fecha actual del sistema
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaActual = dateFormat.format(new Date());
+        System.out.println("Fecha actual del sistema: " + fechaActual);
 
-    // Establecer la fecha en el campo de texto
-    txtFechaInicio.setText(fechaActual);
-}
+        // Establecer la fecha en el campo de texto
+        txtFechaInicio.setText(fechaActual);
+    }
 
     private void calcularFechaFinal() {
-    // Obtener la fecha de inicio del préstamo
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    Date fechaInicio = null;
-    try {
-        fechaInicio = dateFormat.parse(txtFechaInicio.getText());
-    } catch (ParseException e) {
-        e.printStackTrace();
-        return;
+        // Obtener la fecha de inicio del préstamo
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date fechaInicio = null;
+        try {
+            fechaInicio = dateFormat.parse(txtFechaInicio.getText());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Obtener el plazo del préstamo desde el JSpinner
+        int plazoMeses = (Integer) txtPlazoPrestamo.getValue(); // Asumiendo que tu JSpinner se llama spinnerPlazoPrestamo
+
+        // Calcular la fecha final
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicio);
+        calendar.add(Calendar.MONTH, plazoMeses);
+
+        // Formatear la fecha final
+        String fechaFinal = dateFormat.format(calendar.getTime());
+
+        // Establecer la fecha final en el campo de texto
+        txtFechaFinal.setText(fechaFinal);
+
+        // Imprimir la fecha final para verificar
+        System.out.println("Fecha final calculada: " + fechaFinal);
     }
-
-    // Obtener el plazo del préstamo desde el JSpinner
-    int plazoMeses = (Integer) txtPlazoPrestamo.getValue(); // Asumiendo que tu JSpinner se llama spinnerPlazoPrestamo
-
-    // Calcular la fecha final
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(fechaInicio);
-    calendar.add(Calendar.MONTH, plazoMeses);
-
-    // Formatear la fecha final
-    String fechaFinal = dateFormat.format(calendar.getTime());
-
-    // Establecer la fecha final en el campo de texto
-    txtFechaFinal.setText(fechaFinal);
-
-    // Imprimir la fecha final para verificar
-    System.out.println("Fecha final calculada: " + fechaFinal);
-}
 
     private boolean validarCampos() {
-    // Verificar que los campos obligatorios no estén vacíos
-    boolean camposLlenos = !txtIDPrestamo.getText().trim().isEmpty()
-            && !txtIDCliente.getText().trim().isEmpty()
-            && !txtFechaInicio.getText().trim().isEmpty()
-            && !txtFechaFinal.getText().trim().isEmpty()
-            && !txtTipoGarantia.getText().trim().isEmpty()
-            && !txtMontoPrestamo.getText().trim().isEmpty()
-            && !txtBalancePrestamo.getText().trim().isEmpty()
-            && !txtTasaPrestamo.getText().trim().isEmpty()
-            && !txtTasaFija.getText().trim().isEmpty();
+        // Verificar que los campos obligatorios no estén vacíos
+        boolean camposLlenos = !txtIDPrestamo.getText().trim().isEmpty()
+                && !txtIDCliente.getText().trim().isEmpty()
+                && !txtFechaInicio.getText().trim().isEmpty()
+                && !txtFechaFinal.getText().trim().isEmpty()
+                && !txtTipoGarantia.getText().trim().isEmpty()
+                && !txtMontoPrestamo.getText().trim().isEmpty()
+                && !txtBalancePrestamo.getText().trim().isEmpty()
+                && !txtTasaPrestamo.getText().trim().isEmpty()
+                && !txtTasaFija.getText().trim().isEmpty();
 
-    if (!camposLlenos) {
-        return false;
-    }
-
-    // Validar que el plazo del préstamo sea un número mayor a 0
-    int plazoPrestamo = ((Number) txtPlazoPrestamo.getValue()).intValue();
-    if (plazoPrestamo <= 0) {
-        return false;
-    }
-
-    // Validar que la tasa fija sea un número mayor a 0
-    double tasaFija;
-    try {
-        tasaFija = Double.parseDouble(txtTasaFija.getText().trim());
-        if (tasaFija <= 0) {
+        if (!camposLlenos) {
             return false;
         }
-    } catch (NumberFormatException e) {
-        return false;
-    }
 
-    // Validar que el monto del préstamo sea un número positivo
-    double montoPrestamo;
-    try {
-        montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText().trim());
-        if (montoPrestamo <= 0) {
+        // Validar que el plazo del préstamo sea un número mayor a 0
+        int plazoPrestamo = ((Number) txtPlazoPrestamo.getValue()).intValue();
+        if (plazoPrestamo <= 0) {
             return false;
         }
-    } catch (NumberFormatException e) {
-        return false;
-    }
 
-    // Validar que la fecha final sea posterior a la fecha de inicio
-    try {
-        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
-        Date fechaInicio = formatoFecha.parse(txtFechaInicio.getText().trim());
-        Date fechaFinal = formatoFecha.parse(txtFechaFinal.getText().trim());
-        if (fechaFinal.before(fechaInicio)) {
+        // Validar que la tasa fija sea un número mayor a 0
+        double tasaFija;
+        try {
+            tasaFija = Double.parseDouble(txtTasaFija.getText().trim());
+            if (tasaFija <= 0) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
             return false;
         }
-    } catch (ParseException e) {
-        return false;
-    }
 
-    // Validar que el balance del préstamo sea un número positivo
-    double balancePrestamo;
-    try {
-        balancePrestamo = Double.parseDouble(txtBalancePrestamo.getText().trim());
-        if (balancePrestamo < 0) {
+        // Validar que el monto del préstamo sea un número positivo
+        double montoPrestamo;
+        try {
+            montoPrestamo = Double.parseDouble(txtMontoPrestamo.getText().trim());
+            if (montoPrestamo <= 0) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
             return false;
         }
-    } catch (NumberFormatException e) {
-        return false;
-    }
 
-    return true;
-}
+        // Validar que la fecha final sea posterior a la fecha de inicio
+        try {
+            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+            Date fechaInicio = formatoFecha.parse(txtFechaInicio.getText().trim());
+            Date fechaFinal = formatoFecha.parse(txtFechaFinal.getText().trim());
+            if (fechaFinal.before(fechaInicio)) {
+                return false;
+            }
+        } catch (ParseException e) {
+            return false;
+        }
+
+        // Validar que el balance del préstamo sea un número positivo
+        double balancePrestamo;
+        try {
+            balancePrestamo = Double.parseDouble(txtBalancePrestamo.getText().trim());
+            if (balancePrestamo < 0) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-    /* Set the Nimbus look and feel */
-    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-     */
-    try {
-        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-                javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                break;
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
             }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-    } catch (ClassNotFoundException ex) {
-        java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    } catch (InstantiationException ex) {
-        java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    } catch (IllegalAccessException ex) {
-        java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-        java.util.logging.Logger.getLogger(MantenimientoPrestamos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-    }
-    //</editor-fold>
+        //</editor-fold>
 
-    /* Create and display the form */
-    java.awt.EventQueue.invokeLater(new Runnable() {
-        public void run() {
-            new MantenimientoPrestamos().setVisible(true);
-        }
-    });
-}
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MantenimientoPrestamos().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

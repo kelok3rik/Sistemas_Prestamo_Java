@@ -281,7 +281,7 @@ public class GenerarCobros extends javax.swing.JFrame {
                     partes[9] = String.format("%.2f", balancePrestamo); // Actualizar balance
 
                     if (balancePrestamo <= 0) {
-                        partes[3] = "true"; // Estado_Prestamo = true si el balance es cero o menor
+                        partes[3] = "false"; // Estado_Prestamo = true si el balance es cero o menor
                     }
 
                     linea = String.join(",", partes);

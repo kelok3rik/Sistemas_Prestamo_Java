@@ -279,7 +279,7 @@ public class ReversarCobros extends javax.swing.JFrame {
                     partes[9] = String.format("%.2f", balancePrestamo); // Actualizar balance
 
                     if (balancePrestamo > 0) {
-                        partes[3] = "false"; // Estado_Prestamo = false si el balance es mayor a cero
+                        partes[3] = "true"; // Estado_Prestamo = false si el balance es mayor a cero
                     }
 
                     linea = String.join(",", partes);

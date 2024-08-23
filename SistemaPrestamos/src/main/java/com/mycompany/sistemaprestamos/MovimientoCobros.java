@@ -393,7 +393,7 @@ public class MovimientoCobros extends javax.swing.JFrame {
                         // Si el nuevo balance es cero, marcar el estado como true
                         if (nuevoBalance <= 0) {
                             atributos[9] = "0"; // Asegurar que el balance sea cero
-                            atributos[3] = "true"; // Suponiendo que el estado está en la posición 10
+                            atributos[3] = "false"; // Suponiendo que el estado está en la posición 10
                         } else {
                             atributos[9] = String.valueOf(nuevoBalance);
                         }
